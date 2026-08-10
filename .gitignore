@@ -1,0 +1,5 @@
+duck_state.json
+*.log
+__pycache__/
+*.pyc
+.DS_Store
