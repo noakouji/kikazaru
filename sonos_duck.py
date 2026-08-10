@@ -21,6 +21,7 @@ DUCK_FLOOR = 3         # 下げすぎ防止の下限
 FADE_STEPS = 5         # フェードの段数
 POLL_SEC = 0.05        # マイク状態の監視間隔
 RELEASE_SEC = 0.4      # 発話が途切れてから戻すまでの猶予
+REFRESH_SEC = 60       # 制御対象を取り直す間隔（グループ変更に追従）
 STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "duck_state.json")
 
 # --------------------- マイク状態（CoreAudio） ---------------------
@@ -145,17 +146,33 @@ def recover_previous_crash():
         log(f"⚠️ 復元処理でエラー: {e}")
 
 
+def find_targets_with_retry():
+    """ログイン直後はネットワークが未接続のことがあるので、間隔を空けて粘る"""
+    for wait in (0, 3, 5, 10, 20, 30, 30, 60):
+        if wait:
+            time.sleep(wait)
+        try:
+            t = sonos.find_rooms()
+            if t:
+                return t
+        except Exception:
+            pass
+        log("… Sonosを探しています")
+    return []
+
+
 def main():
     log("Sonos ダッキングを開始します")
     recover_previous_crash()
 
-    targets = sonos.find_rooms()
+    targets = find_targets_with_retry()
     if not targets:
         log("❌ Sonosが見つかりません")
         return 1
     for ip, name in targets:
         log(f"🎯 対象: {name} ({ip})")
-    log(f"⚙️  {int(DUCK_RATIO*100)}%まで / フェード{FADE_STEPS}段 / 復帰猶予{RELEASE_SEC}秒")
+    log(f"⚙️  {int(DUCK_RATIO*100)}%まで / フェード{FADE_STEPS}段 / "
+        f"復帰猶予{RELEASE_SEC}秒 / 対象更新{REFRESH_SEC}秒ごと")
     log("待機中（Ctrl+Cで終了）")
 
     d = Ducker(targets)
@@ -164,6 +181,7 @@ def main():
         signal.signal(sig, lambda *_: sys.exit(0))
 
     last_active = 0.0
+    last_refresh = time.time()
     ducked = False
     while True:
         if mic_active():
@@ -174,6 +192,18 @@ def main():
         elif ducked and time.time() - last_active > RELEASE_SEC:
             d.restore()
             ducked = False
+
+        # 下げていない間だけ、グループ構成の変化に追従する
+        if not ducked and time.time() - last_refresh > REFRESH_SEC:
+            last_refresh = time.time()
+            try:
+                fresh = sonos.find_rooms()
+                if fresh and fresh != d.targets:
+                    log(f"🔄 構成が変わりました → {[n for _, n in fresh]}")
+                    d.targets = fresh
+            except Exception:
+                pass
+
         time.sleep(POLL_SEC)
 
 
