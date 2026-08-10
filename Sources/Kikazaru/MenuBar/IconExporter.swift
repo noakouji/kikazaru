@@ -46,7 +46,7 @@ enum SettingsExporter {
     static func run(into path: String) {
         var settings = Settings()
         settings.hotkeyEnabled = true          // 隠れている項目も含めて確認する
-        let view = SettingsView(settings: settings) { _ in }
+        let view = SettingsView(settings: settings, model: nil) { _ in }
 
         let renderer = ImageRenderer(content: view.content)
         renderer.scale = 2

@@ -18,12 +18,20 @@ struct Settings: Sendable, Equatable {
     /// ホットキーとして監視するキーコード。既定は fn（Aqua Voice の既定キー）
     var hotkeyKeyCode: Int64 = 63
 
+    /// 表示言語
+    var language: L10n.Language = .auto
+
+    /// メニューバーのアイコンを絵文字にするか。分かりやすさ優先で既定は絵文字。
+    var useEmojiIcon: Bool = true
+
     private enum Key {
         static let ratio = "duckRatio"
         static let delay = "releaseDelay"
         static let hotkey = "hotkeyEnabled"
         static let systemVolume = "systemVolumeEnabled"
         static let hotkeyKeyCode = "hotkeyKeyCode"
+        static let language = "language"
+        static let emojiIcon = "useEmojiIcon"
     }
 
     static func load(from defaults: UserDefaults = .standard) -> Settings {
@@ -39,6 +47,13 @@ struct Settings: Sendable, Equatable {
         if defaults.object(forKey: Key.hotkeyKeyCode) != nil {
             s.hotkeyKeyCode = Int64(defaults.integer(forKey: Key.hotkeyKeyCode))
         }
+        if let raw = defaults.string(forKey: Key.language),
+           let lang = L10n.Language(rawValue: raw) {
+            s.language = lang
+        }
+        s.useEmojiIcon = defaults.object(forKey: Key.emojiIcon) == nil
+            ? true : defaults.bool(forKey: Key.emojiIcon)
+        L10n.override = s.language
         return s
     }
 
@@ -48,5 +63,8 @@ struct Settings: Sendable, Equatable {
         defaults.set(hotkeyEnabled, forKey: Key.hotkey)
         defaults.set(systemVolumeEnabled, forKey: Key.systemVolume)
         defaults.set(Int(hotkeyKeyCode), forKey: Key.hotkeyKeyCode)
+        defaults.set(language.rawValue, forKey: Key.language)
+        defaults.set(useEmojiIcon, forKey: Key.emojiIcon)
+        L10n.override = language
     }
 }

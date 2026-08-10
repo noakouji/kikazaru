@@ -5,20 +5,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var coordinator: Coordinator?
     private var statusItem: StatusItemController?
+    private var model: AppModel?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let settings = Settings.load()
 
-        var actions: [DuckAction] = [SonosAction()]
+        let sonos = SonosAction()
+        var actions: [DuckAction] = [sonos]
         if settings.systemVolumeEnabled {
             actions.append(SystemVolumeAction())
         }
 
+        let model = AppModel(sonos: sonos)
         let coordinator = Coordinator(actions: actions, settings: settings)
+        self.model = model
         self.coordinator = coordinator
-        statusItem = StatusItemController(coordinator: coordinator, settings: settings)
+        statusItem = StatusItemController(coordinator: coordinator, model: model, settings: settings)
 
         Task {
+            await model.refresh()
             await coordinator.start()
             statusItem?.rebuildMenu()
         }
