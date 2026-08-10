@@ -21,9 +21,6 @@ struct Settings: Sendable, Equatable {
     /// 表示言語
     var language: L10n.Language = .auto
 
-    /// メニューバーのアイコンを絵文字にするか。分かりやすさ優先で既定は絵文字。
-    var useEmojiIcon: Bool = true
-
     /// 下げない対象として外したスピーカー
     var disabledSpeakerIDs: Set<String> = []
 
@@ -37,7 +34,6 @@ struct Settings: Sendable, Equatable {
         static let systemVolume = "systemVolumeEnabled"
         static let hotkeyKeyCode = "hotkeyKeyCode"
         static let language = "language"
-        static let emojiIcon = "useEmojiIcon"
         static let disabledSpeakers = "disabledSpeakerIDs"
         static let knownSpeakers = "knownSpeakerIDs"
     }
@@ -59,8 +55,6 @@ struct Settings: Sendable, Equatable {
            let lang = L10n.Language(rawValue: raw) {
             s.language = lang
         }
-        s.useEmojiIcon = defaults.object(forKey: Key.emojiIcon) == nil
-            ? true : defaults.bool(forKey: Key.emojiIcon)
         s.disabledSpeakerIDs = Set(defaults.stringArray(forKey: Key.disabledSpeakers) ?? [])
         s.knownSpeakerIDs = Set(defaults.stringArray(forKey: Key.knownSpeakers) ?? [])
         L10n.override = s.language
@@ -74,7 +68,6 @@ struct Settings: Sendable, Equatable {
         defaults.set(systemVolumeEnabled, forKey: Key.systemVolume)
         defaults.set(Int(hotkeyKeyCode), forKey: Key.hotkeyKeyCode)
         defaults.set(language.rawValue, forKey: Key.language)
-        defaults.set(useEmojiIcon, forKey: Key.emojiIcon)
         defaults.set(Array(disabledSpeakerIDs), forKey: Key.disabledSpeakers)
         defaults.set(Array(knownSpeakerIDs), forKey: Key.knownSpeakers)
         L10n.override = language

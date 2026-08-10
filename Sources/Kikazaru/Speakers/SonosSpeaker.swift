@@ -22,8 +22,15 @@ final class SonosSpeaker: SpeakerControl, @unchecked Sendable {
 
     /// 音量を個別に持つ可視メンバーだけを返す。
     /// サテライト（Sub・サラウンド）は親機に追従するので含めない。
+    ///
+    /// 経路を 2 つ持つ。SSDP は生のマルチキャストを使うため、
+    /// ローカルネットワークの許可が下りていないと無音で失敗する。
+    /// その場合でも Bonjour 経由なら見つかるので、両方試す。
     static func discover() async -> [SpeakerControl] {
-        let ips = await SonosDiscovery.discover()
+        var ips = await SonosDiscovery.discover()
+        if ips.isEmpty {
+            ips = await BonjourBrowser.hosts(ofType: "_sonos._tcp", timeout: 3)
+        }
         guard !ips.isEmpty else { return [] }
         return await SonosTopology.rooms(askingAnyOf: ips).map(SonosSpeaker.init)
     }

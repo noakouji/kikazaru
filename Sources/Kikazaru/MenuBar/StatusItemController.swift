@@ -32,15 +32,10 @@ final class StatusItemController {
 
     private func applyAppearance(for state: Coordinator.State) {
         guard let button = statusItem.button else { return }
-        if settings.useEmojiIcon {
-            button.image = nil
-            button.title = state == .ducked ? "🙉" : "🐵"
-        } else {
-            button.title = ""
-            button.image = AppIcon.menuBar(ducked: state == .ducked)
-        }
-        button.toolTip = L10n.t("Kikazaru — 話している間だけ部屋のBGMを下げます",
-                                "Kikazaru — turns the room down while you talk")
+        button.image = nil
+        button.title = state == .ducked ? "🙉" : "🐵"
+        button.toolTip = L10n.t("Kikazaru — マイクがオンの間だけBGMを下げます",
+                                "Kikazaru — lowers the music while your mic is on")
     }
 
     // MARK: - メニュー

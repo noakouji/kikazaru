@@ -32,6 +32,18 @@ final class AppModel {
         persistSelection()
     }
 
+    /// 起動直後はネットワークがまだ整っていないことがある。
+    /// 1 回の空振りで「見つかりません」と表示し続けないよう、間隔を空けて数回試す。
+    func refreshWithRetry() async {
+        for delay in [0.0, 2.0, 5.0, 10.0, 20.0] {
+            if delay > 0 {
+                try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            }
+            await refresh()
+            if !speakers.isEmpty { return }
+        }
+    }
+
     func speakers(of kind: SpeakerKind) -> [SpeakerControl] {
         speakers.filter { $0.kind == kind }
     }

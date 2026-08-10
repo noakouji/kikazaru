@@ -32,7 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = StatusItemController(coordinator: coordinator, model: model, settings: settings)
 
         Task {
-            await model.refresh()
+            await model.refreshWithRetry()
             await coordinator.start()
             statusItem?.rebuildMenu()
         }

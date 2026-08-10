@@ -12,5 +12,15 @@
     <key>LSMinimumSystemVersion</key>  <string>14.0</string>
     <key>LSUIElement</key>             <true/>
     <key>NSHumanReadableCopyright</key><string>no plan inc.</string>
+
+    <!-- スピーカーを探すために同じネットワーク上の機器へアクセスする -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>同じネットワーク上のスピーカーを見つけて、音量を調整するために使用します。</string>
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_googlecast._tcp</string>
+        <string>_soundtouch._tcp</string>
+        <string>_sonos._tcp</string>
+    </array>
 </dict>
 </plist>

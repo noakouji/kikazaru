@@ -49,8 +49,8 @@ struct SettingsView: View {
             Text("🙉").font(.system(size: 44))
             VStack(alignment: .leading, spacing: 3) {
                 Text("Kikazaru").font(.title2).bold()
-                Text(L10n.t("話している間だけ、部屋のBGMを下げます",
-                            "Turns the room down while you talk"))
+                Text(L10n.t("マイクがオンの間だけ、BGMを下げます",
+                            "Lowers the music while your mic is on"))
                     .font(.callout).foregroundStyle(.secondary)
             }
             Spacer()
@@ -288,13 +288,6 @@ struct SettingsView: View {
             }
             .pickerStyle(.menu)
 
-            Toggle(L10n.t("メニューバーに絵文字を使う（🐵 / 🙉）",
-                          "Use emoji in the menu bar (🐵 / 🙉)"),
-                   isOn: $settings.useEmojiIcon)
-            Text(L10n.t("off にすると、macOS 標準の見た目に合わせた単色アイコンになります。",
-                        "Turn off for a monochrome icon that matches the macOS menu bar."))
-                .font(.caption).foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

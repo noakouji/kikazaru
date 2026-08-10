@@ -3,8 +3,8 @@ import SwiftUI
 
 /// このアプリについて。
 ///
-/// 設定画面は設定に専念させ、「何のためのアプリか」はここで説明する。
-/// 抽象的に書くと伝わらないので、実際に起きることを具体例で示す。
+/// 設定画面は設定に専念させ、「何のためのアプリか」はここで順を追って説明する。
+/// 抽象的に書くと伝わらないので、番号付きで一段ずつ、実際に起きることを示す。
 struct AboutView: View {
 
     private var version: String {
@@ -13,35 +13,39 @@ struct AboutView: View {
 
     var body: some View {
         ScrollView { content }
-            .frame(width: 520, height: 660)
+            .frame(width: 540, height: 680)
     }
 
     /// スクロールの中身。ScrollView はオフスクリーン描画だと空になるため分けてある。
     var content: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 24) {
             header
-            problem
-            cause
-            solution
-            supported
-            usage
+            section(1, L10n.t("こんなことが起きます", "What goes wrong")) { problem }
+            section(2, L10n.t("なぜ自動で止まらないのか", "Why it doesn't stop by itself")) { cause }
+            section(3, L10n.t("Kikazaru が何をするか", "What Kikazaru does")) { solution }
+            section(4, L10n.t("対応しているスピーカー", "Supported speakers")) { supported }
+            section(5, L10n.t("使いはじめる", "Getting started")) { usage }
         }
-        .padding(26)
-        .frame(width: 520)
+        .padding(28)
+        .frame(width: 540)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private func md(_ s: String) -> Text { Text(LocalizedStringKey(s)) }
 
+    private func paragraph(_ text: String) -> some View {
+        md(text).font(.callout).fixedSize(horizontal: false, vertical: true)
+    }
+
     // MARK: - ヘッダー
 
     private var header: some View {
         HStack(spacing: 16) {
-            Text("🙉").font(.system(size: 52))
+            Text("🙉").font(.system(size: 54))
             VStack(alignment: .leading, spacing: 4) {
                 Text("Kikazaru").font(.largeTitle).bold()
-                Text(L10n.t("話している間だけ、部屋のBGMを下げます",
-                            "Turns the room down while you talk"))
+                Text(L10n.t("マイクがオンの間だけ、BGMを下げます",
+                            "Lowers the music while your mic is on"))
                     .foregroundStyle(.secondary)
                 Text(L10n.t("バージョン \(version)", "Version \(version)"))
                     .font(.caption).foregroundStyle(.tertiary)
@@ -50,45 +54,53 @@ struct AboutView: View {
         }
     }
 
-    // MARK: - 具体例
+    /// 番号付きの見出しで、読む順番を明示する。
+    private func section<Content: View>(
+        _ number: Int, _ title: String, @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Text("\(number)")
+                    .font(.subheadline).bold().foregroundStyle(.white)
+                    .frame(width: 24, height: 24)
+                    .background(Circle().fill(Color.accentColor))
+                Text(title).font(.title3).bold()
+            }
+            content().padding(.leading, 34)
+        }
+    }
+
+    private func box<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) { content() }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.10)))
+    }
+
+    // MARK: - 1. 問題
 
     private var problem: some View {
-        card(icon: "exclamationmark.bubble", title: L10n.t("こんなことが起きます", "The problem"),
-             tint: .orange) {
-            md(L10n.t("""
-                スピーカーで音楽を流しながら、音声入力で文章を書いているとします。
-                """, """
-                Say you are dictating while music plays on your speakers.
-                """))
-                .font(.callout).fixedSize(horizontal: false, vertical: true)
-
-            example(
-                spoken: L10n.t("明日の定例は10時からです", "The meeting starts at ten"),
-                got: L10n.t("明日の定例は10時からです 君と歩いた あの日の",
-                            "The meeting starts at ten walking with you that day"))
-
-            md(L10n.t("""
+        VStack(alignment: .leading, spacing: 10) {
+            paragraph(L10n.t("スピーカーで音楽を流しながら、音声入力で文章を書いているとします。",
+                             "Say you are dictating while music plays on your speakers."))
+            box {
+                quote(L10n.t("話した内容", "What you said"),
+                      L10n.t("明日の定例は10時からです", "The meeting starts at ten"), .secondary)
+                quote(L10n.t("入力された文字", "What actually got typed"),
+                      L10n.t("明日の定例は10時からです 君と歩いた あの日の",
+                             "The meeting starts at ten walking with you that day"), .orange)
+            }
+            paragraph(L10n.t("""
                 マイクが自分の声と一緒に **スピーカーの音楽まで拾ってしまう** ため、\
-                歌詞やナレーションが文章に紛れ込みます。
+                歌詞やナレーションが文章に紛れ込みます。オンライン会議でも同じことが起きます。
                 """, """
-                The microphone picks up **the music along with your voice**, \
-                so lyrics and narration end up in your text.
+                The microphone picks up **the music along with your voice**, so lyrics and \
+                narration end up in your text. The same happens in online meetings.
                 """))
-                .font(.callout).fixedSize(horizontal: false, vertical: true)
         }
     }
 
-    private func example(spoken: String, got: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            row(label: L10n.t("話した内容", "What you said"), text: spoken, color: .secondary)
-            row(label: L10n.t("入力された文字", "What you got"), text: got, color: .orange)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.10)))
-    }
-
-    private func row(label: String, text: String, color: Color) -> some View {
+    private func quote(_ label: String, _ text: String, _ color: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(label).font(.caption2).foregroundStyle(.tertiary)
             Text("「\(text)」").font(.callout).foregroundStyle(color)
@@ -96,81 +108,87 @@ struct AboutView: View {
         }
     }
 
-    // MARK: - 原因
+    // MARK: - 2. 原因
 
     private var cause: some View {
-        card(icon: "questionmark.circle", title: L10n.t("なぜ自動で止まらないのか", "Why it doesn't stop on its own"),
-             tint: .secondary) {
-            md(L10n.t("""
+        VStack(alignment: .leading, spacing: 10) {
+            paragraph(L10n.t("""
                 Aqua Voice などの音声入力アプリは、録音を始めると音を下げてくれます。\
                 ただし止められるのは **Mac につながったスピーカー** だけです。
-
-                Sonos や Google Home は、Mac ではなく **スピーカー自身が再生** しています。\
-                Mac はその音を握っていないので、止めようがありません。
                 """, """
                 Dictation apps do lower the volume when recording starts — but only for \
                 **speakers connected to your Mac**.
-
-                Sonos and Google Home **play the audio themselves**. Your Mac never touches \
-                that sound, so it cannot turn it down.
                 """))
-                .font(.callout).fixedSize(horizontal: false, vertical: true)
+            box {
+                compareRow("✅", L10n.t("Mac につないだスピーカー", "Speakers plugged into the Mac"),
+                           L10n.t("自動で下がる", "Lowered automatically"), .green)
+                compareRow("❌", L10n.t("Sonos / Google Home", "Sonos / Google Home"),
+                           L10n.t("下がらない", "Not lowered"), .orange)
+            }
+            paragraph(L10n.t("""
+                Sonos や Google Home は **スピーカー自身が再生** しているので、\
+                Mac はその音を握っていません。だから止めようがないのです。
+                """, """
+                Sonos and Google Home **play the audio themselves**, so your Mac never touches \
+                that sound. It simply cannot turn it down.
+                """))
         }
     }
+
+    private func compareRow(_ mark: String, _ name: String,
+                            _ result: String, _ color: Color) -> some View {
+        HStack(spacing: 10) {
+            Text(mark)
+            Text(name).font(.callout)
+            Spacer()
+            Text(result).font(.caption).foregroundStyle(color)
+        }
+    }
+
+    // MARK: - 3. 解決
 
     private var solution: some View {
-        card(icon: "checkmark.circle", title: L10n.t("Kikazaru がすること", "What Kikazaru does"),
-             tint: .green) {
-            timeline
-            md(L10n.t("""
-                スピーカー本体に直接命令を送って音量を変えます。\
-                **ヘッドホンに切り替えなくても、音楽を流したまま音声入力できます。**
-                """, """
-                It talks to the speaker directly and changes its volume. \
-                **You can keep the music playing instead of switching to headphones.**
-                """))
-                .font(.callout).fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    private var timeline: some View {
         VStack(alignment: .leading, spacing: 10) {
-            step("🎙", L10n.t("話し始める", "You start talking"),
-                 L10n.t("マイクが使われたことを検知します", "It notices the microphone turned on"))
-            step("🙉", L10n.t("BGMが下がる", "The room gets quiet"),
-                 L10n.t("スピーカーの音量を約0.1秒で下げます", "Speaker volume drops in about 0.1 seconds"))
-            step("🐵", L10n.t("話し終わる", "You stop talking"),
-                 L10n.t("元の音量にそのまま戻します", "The original volume comes right back"))
+            paragraph(L10n.t("Kikazaru はスピーカー本体に直接命令を送り、音量を変えます。",
+                             "Kikazaru talks to the speaker directly and changes its volume."))
+            box {
+                step("🎙", L10n.t("話し始める", "You start talking"),
+                     L10n.t("マイクがオンになったことを検知します",
+                            "It notices the microphone turned on"))
+                step("🙉", L10n.t("BGMが下がる", "The music drops"),
+                     L10n.t("スピーカーの音量を約0.1秒で下げます。メニューバーも 🙉 に変わります",
+                            "Volume drops in about 0.1 seconds. The menu bar turns 🙉"))
+                step("🐵", L10n.t("話し終わる", "You stop talking"),
+                     L10n.t("元の音量にそのまま戻します", "The original volume comes right back"))
+            }
+            paragraph(L10n.t("**ヘッドホンに切り替えなくても、音楽を流したまま音声入力できます。**",
+                             "**You can keep the music playing instead of switching to headphones.**"))
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.10)))
     }
 
     private func step(_ emoji: String, _ title: String, _ detail: String) -> some View {
-        HStack(alignment: .top, spacing: 10) {
+        HStack(alignment: .top, spacing: 12) {
             Text(emoji).font(.title3)
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.callout).bold()
                 Text(detail).font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
 
-    // MARK: - 対応機種と使い方
+    // MARK: - 4. 対応機種
 
     private var supported: some View {
-        card(icon: "hifispeaker.2", title: L10n.t("対応スピーカー", "Supported speakers"),
-             tint: .secondary) {
-            VStack(alignment: .leading, spacing: 6) {
-                supportRow("Sonos", L10n.t("推奨。動作確認済み", "Recommended — verified"), .green)
-                supportRow("Google Home / Chromecast",
-                           L10n.t("動作確認済み", "Verified"), .green)
-                supportRow("Bose SoundTouch",
-                           L10n.t("実機未確認", "Not tested on hardware"), .orange)
-                supportRow(L10n.t("Mac から鳴らしているもの", "Anything played by the Mac"),
-                           L10n.t("設定で有効にできます", "Enable it in Settings"), .secondary)
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            supportRow("Sonos", L10n.t("推奨。動作確認済み", "Recommended — verified"), .green)
+            supportRow("Google Home / Chromecast", L10n.t("動作確認済み", "Verified"), .green)
+            supportRow("Bose SoundTouch", L10n.t("実機未確認", "Not tested on hardware"), .orange)
+            supportRow(L10n.t("Mac から鳴らしているもの", "Anything played by the Mac"),
+                       L10n.t("設定で有効にできます", "Enable it in Settings"), .secondary)
+            paragraph(L10n.t("Sonos 以外は、うっかりテレビを下げないよう **初期状態ではオフ** です。",
+                             "Everything except Sonos is **off by default**, so your TV is safe."))
+                .padding(.top, 4)
         }
     }
 
@@ -183,20 +201,21 @@ struct AboutView: View {
         }
     }
 
+    // MARK: - 5. 使い方
+
     private var usage: some View {
-        card(icon: "sparkles", title: L10n.t("使い方", "Getting started"), tint: .secondary) {
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(Array(steps.enumerated()), id: \.offset) { index, text in
-                    HStack(alignment: .top, spacing: 8) {
-                        Text("\(index + 1).").font(.callout).foregroundStyle(.secondary)
-                        md(text).font(.callout).fixedSize(horizontal: false, vertical: true)
-                    }
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(Array(usageSteps.enumerated()), id: \.offset) { index, text in
+                HStack(alignment: .top, spacing: 10) {
+                    Text("\(index + 1).").font(.callout).foregroundStyle(.secondary)
+                        .frame(width: 18, alignment: .trailing)
+                    md(text).font(.callout).fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
     }
 
-    private var steps: [String] {
+    private var usageSteps: [String] {
         L10n.isJapanese ? [
             "メニューバーの 🐵 をクリックして **設定** を開く",
             "見つかったスピーカーのうち、下げたいものに **チェック** を入れる",
@@ -207,18 +226,6 @@ struct AboutView: View {
             "That's it — the icon turns 🙉 while you talk",
         ]
     }
-
-    // MARK: - 部品
-
-    private func card<Content: View>(
-        icon: String, title: String, tint: Color, @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label(title, systemImage: icon).font(.headline).foregroundStyle(tint == .secondary ? .primary : tint)
-            content()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
 }
 
 enum AboutWindow {
@@ -227,7 +234,7 @@ enum AboutWindow {
         let window = NSWindow(contentViewController: NSHostingController(rootView: AboutView()))
         window.title = L10n.t("Kikazaru について", "About Kikazaru")
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 520, height: 660))
+        window.setContentSize(NSSize(width: 540, height: 680))
         window.center()
         return window
     }
