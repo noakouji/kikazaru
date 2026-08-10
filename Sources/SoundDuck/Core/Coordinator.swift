@@ -18,6 +18,9 @@ final class Coordinator {
 
     var onStateChange: ((State) -> Void)?
 
+    /// メニュー表示のために外から参照する用
+    var actionsForDisplay: [DuckAction] { actions }
+
     private let actions: [DuckAction]
     private let mic = MicMonitor()
     private var hotkey: HotkeyMonitor?
