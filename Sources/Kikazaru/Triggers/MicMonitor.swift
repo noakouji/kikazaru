@@ -12,7 +12,7 @@ final class MicMonitor: @unchecked Sendable {
 
     private var onChange: (@Sendable (Bool) -> Void)?
     private var watchedDevice: AudioDeviceID = kAudioObjectUnknown
-    private let queue = DispatchQueue(label: "SoundDuck.MicMonitor")
+    private let queue = DispatchQueue(label: "Kikazaru.MicMonitor")
 
     private var defaultDeviceAddress = AudioObjectPropertyAddress(
         mSelector: kAudioHardwarePropertyDefaultInputDevice,

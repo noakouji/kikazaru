@@ -1,4 +1,4 @@
-# SoundDuck 設計
+# Kikazaru 設計
 
 2026-08-10
 
@@ -146,7 +146,7 @@ Xcode プロジェクトを使わない理由は、ターミナルから完結�
 ## ディレクトリ構成
 
 ```
-Sources/SoundDuck/
+Sources/Kikazaru/
 ├── main.swift
 ├── AppDelegate.swift
 ├── Core/

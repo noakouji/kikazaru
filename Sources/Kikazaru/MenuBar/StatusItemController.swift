@@ -28,7 +28,7 @@ final class StatusItemController {
 
     private func configureButton() {
         updateIcon(for: .idle)
-        statusItem.button?.toolTip = "SoundDuck — 音声入力中だけ Sonos を下げます"
+        statusItem.button?.toolTip = "Kikazaru — 話している間だけ部屋のスピーカーを黙らせます"
     }
 
     private func updateIcon(for state: Coordinator.State) {
@@ -71,7 +71,7 @@ final class StatusItemController {
         prefs.target = self
         menu.addItem(prefs)
 
-        let quit = NSMenuItem(title: "SoundDuck を終了", action: #selector(quit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Kikazaru を終了", action: #selector(quit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
 

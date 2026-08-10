@@ -41,8 +41,8 @@ struct SettingsView: View {
             Image(nsImage: AppIcon.appIcon(size: 56))
                 .resizable().frame(width: 56, height: 56)
             VStack(alignment: .leading, spacing: 3) {
-                Text("SoundDuck").font(.title2).bold()
-                Text("音声入力中だけ、Sonos の音量を自動で下げます")
+                Text("Kikazaru").font(.title2).bold()
+                Text("話している間だけ、部屋のスピーカーを黙らせます")
                     .font(.callout).foregroundStyle(.secondary)
             }
             Spacer()
@@ -192,7 +192,7 @@ enum SettingsWindow {
         let controller = NSHostingController(
             rootView: SettingsView(settings: settings, onChange: onChange))
         let window = NSWindow(contentViewController: controller)
-        window.title = "SoundDuck"
+        window.title = "Kikazaru"
         window.styleMask = [.titled, .closable]
         window.setContentSize(NSSize(width: 460, height: 620))
         window.center()

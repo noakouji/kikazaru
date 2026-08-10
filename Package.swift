@@ -2,9 +2,9 @@
 import PackageDescription
 
 let package = Package(
-    name: "SoundDuck",
+    name: "Kikazaru",
     platforms: [.macOS(.v14)],
     targets: [
-        .executableTarget(name: "SoundDuck", path: "Sources/SoundDuck")
+        .executableTarget(name: "Kikazaru", path: "Sources/Kikazaru")
     ]
 )

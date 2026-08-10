@@ -1,6 +1,9 @@
-# SoundDuck
+# Kikazaru（聞かざる）
 
-マイクを使っている間だけ Sonos の音量を自動で下げる、macOS のメニューバーアプリ。
+話している間だけ、部屋のスピーカーを黙らせる macOS のメニューバーアプリ。
+
+名前は三猿の「聞かざる」から。マイクに BGM を聞かせない、という役割そのものを表している。
+アイコンも待機中は耳を開け、音量を下げている間は手で耳を塞ぐ。
 
 音声入力（ディクテーション、オンライン会議）を使うとき、スピーカーから流れる音楽が
 マイクに回り込んで認識精度を落とす問題を解決する。ヘッドホンに切り替えず、スピーカー環境のまま使える。
@@ -38,7 +41,7 @@ AirPlay 経由の Sonos は遅延が 2 秒前後あり、しかも別クロッ�
 
 ```bash
 ./scripts/build-app.sh
-open build/SoundDuck.app
+open build/Kikazaru.app
 ```
 
 メニューバーにアイコンが出れば動いている。Dock には表示されない。
@@ -73,7 +76,7 @@ open build/SoundDuck.app
 ## 構成
 
 ```
-Sources/SoundDuck/
+Sources/Kikazaru/
 ├── main.swift              エントリ（.accessory で Dock に出さない）
 ├── AppDelegate.swift
 ├── Core/
