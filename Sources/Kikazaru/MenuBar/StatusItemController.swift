@@ -59,11 +59,12 @@ final class StatusItemController {
 
         menu.addItem(.separator())
         menu.addItem(disabled(L10n.t("見つかったスピーカー", "Speakers found")))
-        if model.rooms.isEmpty {
+        if model.speakers.isEmpty {
             menu.addItem(disabled(L10n.t("　　まだ見つかっていません", "　　None yet")))
         } else {
-            for room in model.rooms {
-                menu.addItem(disabled("　　\(room.roomName)"))
+            for speaker in model.speakers {
+                let mark = model.isEnabled(speaker) ? "✓" : "　"
+                menu.addItem(disabled("　\(mark) \(speaker.name)"))
             }
         }
 

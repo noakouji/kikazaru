@@ -106,74 +106,120 @@ struct SettingsView: View {
     // MARK: - スピーカー
 
     private var speakerSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Label(L10n.t("どのスピーカーを下げるか", "Which speakers to turn down"),
                   systemImage: "hifispeaker.2").font(.headline)
 
-            Text(L10n.t("同じネットワーク上の Sonos を自動で探します。設定は要りません。",
-                        "Sonos speakers on your network are found automatically. No setup needed."))
+            Text(L10n.t("同じネットワーク上のスピーカーを自動で探します。IP アドレスの入力は要りません。",
+                        "Speakers on your network are found automatically. No IP addresses needed."))
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            speakerList
+            ForEach(SpeakerKind.allCases, id: \.self) { kind in
+                speakerGroup(kind)
+            }
 
-            HStack {
+            HStack(spacing: 10) {
                 Button(L10n.t("もう一度探す", "Search again")) {
                     Task { await model?.refresh() }
                 }
                 .disabled(model?.isSearching ?? true)
                 if model?.isSearching == true {
                     ProgressView().controlSize(.small)
+                    Text(L10n.t("探しています…", "Searching…"))
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
 
-            Toggle(L10n.t("Mac 本体の音量も一緒に下げる", "Also lower this Mac's volume"),
+            sonosHelp
+
+            Toggle(L10n.t("この Mac 本体の音量も一緒に下げる", "Also lower this Mac's volume"),
                    isOn: $settings.systemVolumeEnabled)
-            Text(L10n.t("音声入力アプリ側で本体を下げている場合は、off のままで構いません。",
-                        "Leave this off if your dictation app already lowers the Mac's volume."))
+            Text(L10n.t("Bluetooth や AirPlay など、Mac から鳴らしているスピーカーはこれで下がります。",
+                        "This covers anything played through the Mac, such as Bluetooth or AirPlay."))
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
+    /// メーカーごとのまとまり。見つかっていれば一覧、いなければその旨を出す。
     @ViewBuilder
-    private var speakerList: some View {
-        let rooms = model?.rooms ?? []
-        if !rooms.isEmpty {
+    private func speakerGroup(_ kind: SpeakerKind) -> some View {
+        let found = model?.speakers(of: kind) ?? []
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Text(kind.label).font(.subheadline).bold()
+                if kind == .sonos {
+                    badge(L10n.t("推奨", "Recommended"), color: .green)
+                }
+                if !kind.isVerified {
+                    badge(L10n.t("実機未確認", "Untested"), color: .orange)
+                }
+                Spacer()
+            }
+
+            if found.isEmpty {
+                Text(model?.hasSearched == true
+                     ? L10n.t("見つかりませんでした", "Not found")
+                     : L10n.t("探しています…", "Searching…"))
+                    .font(.caption).foregroundStyle(.secondary)
+            } else {
+                ForEach(found, id: \.id) { speaker in
+                    Toggle(isOn: Binding(
+                        get: { model?.isEnabled(speaker) ?? true },
+                        set: { model?.setEnabled($0, for: speaker) })
+                    ) {
+                        Text(speaker.name)
+                    }
+                    .toggleStyle(.checkbox)
+                }
+            }
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.07)))
+    }
+
+    private func badge(_ text: String, color: Color) -> some View {
+        Text(text)
+            .font(.caption2)
+            .padding(.horizontal, 6).padding(.vertical, 2)
+            .background(Capsule().fill(color.opacity(0.18)))
+            .foregroundStyle(color)
+    }
+
+    /// Sonos が見つからないときの手順。専門知識なしでたどれるように番号で書く。
+    private var sonosHelp: some View {
+        DisclosureGroup(L10n.t("Sonos が見つからないときは", "If your Sonos is not found")) {
             VStack(alignment: .leading, spacing: 6) {
-                ForEach(rooms, id: \.ip) { room in
-                    HStack(spacing: 8) {
-                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                        Text(room.roomName)
-                        Text(room.ip).font(.caption).foregroundStyle(.tertiary)
+                ForEach(Array(sonosSteps.enumerated()), id: \.offset) { index, step in
+                    HStack(alignment: .top, spacing: 8) {
+                        Text("\(index + 1).").font(.caption).foregroundStyle(.secondary)
+                        md(step).font(.caption).fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
-            .padding(10)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.08)))
-        } else if model?.hasSearched == true {
-            VStack(alignment: .leading, spacing: 6) {
-                Label(L10n.t("見つかりませんでした", "No speakers found"),
-                      systemImage: "exclamationmark.triangle.fill")
-                    .foregroundStyle(.orange)
-                md(L10n.t("""
-                    Sonos アプリで、アカウント → プライバシーとセキュリティ → **UPnP** が \
-                    有効になっているか確認してください。Mac と Sonos が同じネットワークにいる必要もあります。
-                    """, """
-                    In the Sonos app, check that **UPnP** is enabled under \
-                    Account → Privacy and Security. Your Mac and Sonos must also be on the same network.
-                    """))
-                    .font(.caption).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .padding(10)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.orange.opacity(0.10)))
-        } else {
-            Text(L10n.t("探しています…", "Searching…"))
-                .font(.caption).foregroundStyle(.secondary)
+            .padding(.top, 6)
         }
+        .font(.caption)
+    }
+
+    private var sonosSteps: [String] {
+        L10n.isJapanese ? [
+            "iPhone か Android で **Sonos アプリ** を開く",
+            "右下の **設定** をタップ",
+            "**アカウント** → **プライバシーとセキュリティ** を開く",
+            "**UPnP** をオンにする",
+            "Mac と Sonos が **同じ Wi-Fi** につながっているか確認する",
+            "この画面の **もう一度探す** を押す",
+        ] : [
+            "Open the **Sonos app** on your phone",
+            "Tap **Settings**",
+            "Go to **Account** → **Privacy and Security**",
+            "Turn on **UPnP**",
+            "Make sure your Mac and Sonos are on the **same Wi-Fi**",
+            "Press **Search again** above",
+        ]
     }
 
     // MARK: - 下げ方

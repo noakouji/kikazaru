@@ -151,8 +151,8 @@ final class Coordinator {
 
     private func refreshTargets() async {
         for action in actions {
-            if let sonos = action as? SonosAction {
-                await sonos.refreshRooms()
+            if let speakers = action as? SpeakersAction {
+                await speakers.refresh()
             }
         }
     }

@@ -24,6 +24,12 @@ struct Settings: Sendable, Equatable {
     /// メニューバーのアイコンを絵文字にするか。分かりやすさ優先で既定は絵文字。
     var useEmojiIcon: Bool = true
 
+    /// 下げない対象として外したスピーカー
+    var disabledSpeakerIDs: Set<String> = []
+
+    /// 一度でも見つけたスピーカー。新顔かどうかの判定に使う。
+    var knownSpeakerIDs: Set<String> = []
+
     private enum Key {
         static let ratio = "duckRatio"
         static let delay = "releaseDelay"
@@ -32,6 +38,8 @@ struct Settings: Sendable, Equatable {
         static let hotkeyKeyCode = "hotkeyKeyCode"
         static let language = "language"
         static let emojiIcon = "useEmojiIcon"
+        static let disabledSpeakers = "disabledSpeakerIDs"
+        static let knownSpeakers = "knownSpeakerIDs"
     }
 
     static func load(from defaults: UserDefaults = .standard) -> Settings {
@@ -53,6 +61,8 @@ struct Settings: Sendable, Equatable {
         }
         s.useEmojiIcon = defaults.object(forKey: Key.emojiIcon) == nil
             ? true : defaults.bool(forKey: Key.emojiIcon)
+        s.disabledSpeakerIDs = Set(defaults.stringArray(forKey: Key.disabledSpeakers) ?? [])
+        s.knownSpeakerIDs = Set(defaults.stringArray(forKey: Key.knownSpeakers) ?? [])
         L10n.override = s.language
         return s
     }
@@ -65,6 +75,8 @@ struct Settings: Sendable, Equatable {
         defaults.set(Int(hotkeyKeyCode), forKey: Key.hotkeyKeyCode)
         defaults.set(language.rawValue, forKey: Key.language)
         defaults.set(useEmojiIcon, forKey: Key.emojiIcon)
+        defaults.set(Array(disabledSpeakerIDs), forKey: Key.disabledSpeakers)
+        defaults.set(Array(knownSpeakerIDs), forKey: Key.knownSpeakers)
         L10n.override = language
     }
 }

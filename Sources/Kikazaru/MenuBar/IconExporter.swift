@@ -43,10 +43,15 @@ import SwiftUI
 enum SettingsExporter {
 
     @MainActor
-    static func run(into path: String) {
+    static func run(into path: String) async {
         var settings = Settings()
         settings.hotkeyEnabled = true          // 隠れている項目も含めて確認する
-        let view = SettingsView(settings: settings, model: nil) { _ in }
+
+        // 実際に検出して、一覧の見え方まで確認できるようにする
+        let model = AppModel(action: SpeakersAction())
+        await model.refresh()
+
+        let view = SettingsView(settings: settings, model: model) { _ in }
 
         let renderer = ImageRenderer(content: view.content)
         renderer.scale = 2

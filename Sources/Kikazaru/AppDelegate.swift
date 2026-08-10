@@ -10,13 +10,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         let settings = Settings.load()
 
-        let sonos = SonosAction()
-        var actions: [DuckAction] = [sonos]
+        let speakers = SpeakersAction()
+        var actions: [DuckAction] = [speakers]
         if settings.systemVolumeEnabled {
             actions.append(SystemVolumeAction())
         }
 
-        let model = AppModel(sonos: sonos)
+        speakers.restoreSelection(disabled: settings.disabledSpeakerIDs,
+                                  known: settings.knownSpeakerIDs)
+        let model = AppModel(action: speakers)
+        model.onSelectionChange = { disabled, known in
+            var updated = Settings.load()
+            updated.disabledSpeakerIDs = disabled
+            updated.knownSpeakerIDs = known
+            updated.save()
+        }
         let coordinator = Coordinator(actions: actions, settings: settings)
         self.model = model
         self.coordinator = coordinator
