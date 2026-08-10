@@ -7,6 +7,10 @@ if CommandLine.arguments.count >= 3, CommandLine.arguments[1] == "--export-setti
     exit(0)
 }
 
+if CommandLine.arguments.count >= 3, CommandLine.arguments[1] == "--export-poster" {
+    await PosterExporter.run(into: CommandLine.arguments[2])
+    exit(0)
+}
 if CommandLine.arguments.count >= 3, CommandLine.arguments[1] == "--export-about" {
     await AboutExporter.run(into: CommandLine.arguments[2])
     exit(0)

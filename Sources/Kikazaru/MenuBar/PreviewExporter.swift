@@ -49,3 +49,23 @@ enum AboutExporter {
         print("書き出しました: \(path)")
     }
 }
+
+/// 紹介用の1枚画像を書き出す。
+enum PosterExporter {
+
+    @MainActor
+    static func run(into path: String) {
+        let renderer = ImageRenderer(content: PosterView())
+        renderer.scale = 2
+        guard let image = renderer.nsImage,
+              let tiff = image.tiffRepresentation,
+              let rep = NSBitmapImageRep(data: tiff),
+              let png = rep.representation(using: .png, properties: [:])
+        else {
+            print("書き出しに失敗しました")
+            return
+        }
+        try? png.write(to: URL(fileURLWithPath: path))
+        print("書き出しました: \(path)")
+    }
+}
