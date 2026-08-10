@@ -105,16 +105,24 @@ final class SpeakersAction: DuckAction, @unchecked Sendable {
 
     func snapshot() -> [String: Int] { lock.withLock { saved } }
 
-    func apply(snapshot: [String: Int]) async {
+    @discardableResult
+    func apply(snapshot: [String: Int]) async -> Bool {
         let known = Dictionary(uniqueKeysWithValues: allSpeakers.map { ($0.id, $0) })
-        await withTaskGroup(of: Void.self) { group in
+        let results = await withTaskGroup(of: Bool.self) { group in
             for (id, original) in snapshot {
-                guard let speaker = known[id] else { continue }
+                // 検出が終わっていなくても、識別子から直接つなぎに行く。
+                // ここで諦めると音量が下がったまま取り残される。
+                guard let speaker = known[id] ?? SpeakerFactory.make(id: id) else { continue }
                 group.addTask { [fadeSteps] in
-                    let from = (try? await speaker.volume()) ?? original
+                    guard let from = try? await speaker.volume() else { return false }
                     await speaker.fade(from: from, to: original, steps: fadeSteps)
+                    return ((try? await speaker.volume()) ?? original) == original
                 }
             }
+            var all: [Bool] = []
+            for await ok in group { all.append(ok) }
+            return all
         }
+        return !results.contains(false)
     }
 }

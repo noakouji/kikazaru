@@ -12,8 +12,7 @@ enum SettingsExporter {
         let model = AppModel(action: SpeakersAction())
         await model.refresh()
 
-        let view = SettingsView(settings: settings, model: model,
-                                onShowAbout: {}) { _ in }
+        let view = SettingsView(settings: settings, model: model) { _ in }
 
         let renderer = ImageRenderer(content: view.content)
         renderer.scale = 2

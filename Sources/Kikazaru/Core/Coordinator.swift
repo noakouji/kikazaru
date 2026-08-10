@@ -140,13 +140,23 @@ final class Coordinator {
     // MARK: - 復旧と追従
 
     /// 前回が異常終了で、音量が下がったまま残っていれば戻す。
+    ///
+    /// 戻せなかった分の記録は消さない。消してしまうと下がった値が「元の音量」に化け、
+    /// 次に下げたときにさらに下がる、という取り返しのつかない状態になる。
     private func recoverFromPreviousRun() async {
         guard let pending = StateStore.load() else { return }
+        var unresolved: [String: [String: Int]] = [:]
         for action in actions {
             guard let snapshot = pending[action.name], !snapshot.isEmpty else { continue }
-            await action.apply(snapshot: snapshot)
+            if await !action.apply(snapshot: snapshot) {
+                unresolved[action.name] = snapshot
+            }
         }
-        StateStore.clear()
+        if unresolved.isEmpty {
+            StateStore.clear()
+        } else {
+            StateStore.save(unresolved)
+        }
     }
 
     private func refreshTargets() async {

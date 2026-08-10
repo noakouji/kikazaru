@@ -10,16 +10,26 @@ struct SettingsView: View {
     @State var settings: Settings
     @State private var hotkeyTrusted = HotkeyMonitor.isTrusted
     var model: AppModel?
-    var onShowAbout: (() -> Void)?
     let onChange: (Settings) -> Void
 
     var body: some View {
-        ScrollView { content }
-            .frame(width: 470, height: 640)
-            .onChange(of: settings) { _, newValue in
-                L10n.override = newValue.language
-                onChange(newValue)
-            }
+        TabView(selection: Binding(
+            get: { model?.settingsTab ?? .settings },
+            set: { model?.settingsTab = $0 })
+        ) {
+            ScrollView { content }
+                .tabItem { Label(L10n.t("設定", "Settings"), systemImage: "gearshape") }
+                .tag(AppModel.Tab.settings)
+
+            AboutView()
+                .tabItem { Label(L10n.t("このアプリについて", "About"), systemImage: "info.circle") }
+                .tag(AppModel.Tab.about)
+        }
+        .frame(width: 500, height: 660)
+        .onChange(of: settings) { _, newValue in
+            L10n.override = newValue.language
+            onChange(newValue)
+        }
     }
 
     /// スクロールの中身。
@@ -34,7 +44,7 @@ struct SettingsView: View {
             appearanceSection
         }
         .padding(24)
-        .frame(width: 470)
+        .frame(width: 500)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
@@ -54,7 +64,6 @@ struct SettingsView: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
             Spacer()
-            Button(L10n.t("このアプリについて", "About")) { onShowAbout?() }
         }
     }
 
@@ -132,6 +141,8 @@ struct SettingsView: View {
                             Text(speaker.name)
                         }
                         .toggleStyle(.checkbox)
+                        Text(speaker.kind.label)
+                            .font(.caption2).foregroundStyle(.tertiary)
                         Spacer()
                         Text(on ? L10n.t("下げる", "Will lower")
                                 : L10n.t("そのまま", "Left alone"))
@@ -295,15 +306,13 @@ struct SettingsView: View {
 enum SettingsWindow {
     @MainActor
     static func make(settings: Settings, model: AppModel?,
-                     onShowAbout: @escaping () -> Void,
                      onChange: @escaping (Settings) -> Void) -> NSWindow {
         let controller = NSHostingController(
-            rootView: SettingsView(settings: settings, model: model,
-                                   onShowAbout: onShowAbout, onChange: onChange))
+            rootView: SettingsView(settings: settings, model: model, onChange: onChange))
         let window = NSWindow(contentViewController: controller)
         window.title = "Kikazaru"
         window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 470, height: 640))
+        window.setContentSize(NSSize(width: 500, height: 660))
         window.center()
         return window
     }

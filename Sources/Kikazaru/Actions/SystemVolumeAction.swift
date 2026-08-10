@@ -32,9 +32,11 @@ final class SystemVolumeAction: DuckAction, @unchecked Sendable {
         return ["default": value]
     }
 
-    func apply(snapshot: [String: Int]) async {
-        guard let percent = snapshot["default"] else { return }
+    @discardableResult
+    func apply(snapshot: [String: Int]) async -> Bool {
+        guard let percent = snapshot["default"] else { return true }
         Self.setVolume(Float(percent) / 100)
+        return true
     }
 
     // MARK: - CoreAudio

@@ -3,7 +3,8 @@ import AppKit
 /// メニューバーのアイコンとメニュー。
 ///
 /// 状態は絵文字で表す。🐵 が待機、🙉（聞かざる）が音量を下げている状態。
-/// 「ダッキング」のような専門語は使わず、何が起きているかをそのまま書く。
+/// メニューには「いま何が起きているか」と「止める・再開する」だけを置き、
+/// 設定の中身は設定画面へ寄せる。項目が並ぶほど、どれを押せばいいか分からなくなるため。
 @MainActor
 final class StatusItemController {
 
@@ -12,7 +13,6 @@ final class StatusItemController {
     private let model: AppModel
     private var settings: Settings
     private var settingsWindow: NSWindow?
-    private var aboutWindow: NSWindow?
 
     init(coordinator: Coordinator, model: AppModel, settings: Settings) {
         self.coordinator = coordinator
@@ -33,7 +33,7 @@ final class StatusItemController {
     private func applyAppearance(for state: Coordinator.State) {
         guard let button = statusItem.button else { return }
         button.image = nil
-        button.title = state == .ducked ? "🙉" : "🐵"
+        button.title = coordinator.isEnabled ? (state == .ducked ? "🙉" : "🐵") : "😴"
         button.toolTip = L10n.t("Kikazaru — マイクがオンの間だけBGMを下げます",
                                 "Kikazaru — lowers the music while your mic is on")
     }
@@ -47,36 +47,20 @@ final class StatusItemController {
 
         let toggle = NSMenuItem(
             title: coordinator.isEnabled
-                ? L10n.t("一時停止", "Pause")
-                : L10n.t("再開", "Resume"),
+                ? L10n.t("BGMを下げるのをやめる", "Stop lowering the music")
+                : L10n.t("BGMを下げるのを再開する", "Resume lowering the music"),
             action: #selector(toggleEnabled), keyEquivalent: "")
         toggle.target = self
         menu.addItem(toggle)
 
         menu.addItem(.separator())
-        menu.addItem(disabled(L10n.t("見つかったスピーカー", "Speakers found")))
-        if model.speakers.isEmpty {
-            menu.addItem(disabled(L10n.t("　　まだ見つかっていません", "　　None yet")))
-        } else {
-            for speaker in model.speakers {
-                let mark = model.isEnabled(speaker) ? "✓" : "　"
-                menu.addItem(disabled("　\(mark) \(speaker.name)"))
-            }
-        }
 
-        let refresh = NSMenuItem(
-            title: L10n.t("もう一度探す", "Search again"),
-            action: #selector(refreshRooms), keyEquivalent: "r")
-        refresh.target = self
-        menu.addItem(refresh)
-
-        menu.addItem(.separator())
         let prefs = NSMenuItem(title: L10n.t("設定…", "Settings…"),
                                action: #selector(openSettings), keyEquivalent: ",")
         prefs.target = self
         menu.addItem(prefs)
 
-        let about = NSMenuItem(title: L10n.t("Kikazaru について", "About Kikazaru"),
+        let about = NSMenuItem(title: L10n.t("このアプリについて", "About this app"),
                                action: #selector(openAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
@@ -92,11 +76,17 @@ final class StatusItemController {
     /// 何が起きているかをそのまま書く。専門語は使わない。
     private var statusLine: String {
         guard coordinator.isEnabled else {
-            return L10n.t("⏸ 停止中", "⏸ Paused")
+            return L10n.t("😴 いまは何もしません", "😴 Doing nothing right now")
         }
-        return coordinator.state == .ducked
-            ? L10n.t("🙉 部屋のBGMを下げています", "🙉 Turning the room down")
-            : L10n.t("🐵 待機中（BGMはそのまま）", "🐵 Idle — room untouched")
+        if coordinator.state == .ducked {
+            return L10n.t("🙉 BGMを下げています", "🙉 The music is turned down")
+        }
+        let count = model.enabledCount
+        return count > 0
+            ? L10n.t("🐵 待機中・スピーカー\(count)台を見ています",
+                     "🐵 Watching \(count) speaker(s)")
+            : L10n.t("🐵 待機中・対象のスピーカーがありません",
+                     "🐵 Watching — no speakers selected")
     }
 
     private func disabled(_ title: String) -> NSMenuItem {
@@ -113,19 +103,9 @@ final class StatusItemController {
         rebuildMenu()
     }
 
-    @objc private func refreshRooms() {
-        Task { @MainActor in
-            await model.refresh()
-            rebuildMenu()
-        }
-    }
-
     @objc private func openSettings() {
         if settingsWindow == nil {
-            settingsWindow = SettingsWindow.make(
-                settings: settings, model: model,
-                onShowAbout: { [weak self] in self?.openAbout() }
-            ) { [weak self] updated in
+            settingsWindow = SettingsWindow.make(settings: settings, model: model) { [weak self] updated in
                 guard let self else { return }
                 self.settings = updated
                 updated.save()
@@ -139,13 +119,10 @@ final class StatusItemController {
         settingsWindow?.makeKeyAndOrderFront(nil)
     }
 
+    /// 別ウインドウは増やさず、設定画面のタブを切り替えて見せる。
     @objc private func openAbout() {
-        if aboutWindow == nil {
-            aboutWindow = AboutWindow.make()
-            aboutWindow?.isReleasedWhenClosed = false
-        }
-        NSApp.activate(ignoringOtherApps: true)
-        aboutWindow?.makeKeyAndOrderFront(nil)
+        model.settingsTab = .about
+        openSettings()
     }
 
     @objc private func quit() {

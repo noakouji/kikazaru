@@ -17,6 +17,7 @@ protocol DuckAction: AnyObject, Sendable {
     /// 復元に必要な情報。キーは任意の識別子（Sonos なら IP）
     func snapshot() -> [String: Int]
 
-    /// 起動時に前回の残骸から復元する
-    func apply(snapshot: [String: Int]) async
+    /// 起動時に前回の残骸から復元する。全部戻せたときだけ true。
+    @discardableResult
+    func apply(snapshot: [String: Int]) async -> Bool
 }

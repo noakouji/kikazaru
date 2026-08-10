@@ -8,6 +8,11 @@ import Observation
 @Observable
 final class AppModel {
 
+    enum Tab: Hashable { case settings, about }
+
+    /// 設定画面のどのタブを開くか。別ウインドウを増やさないため状態で持つ。
+    var settingsTab: Tab = .settings
+
     private(set) var speakers: [SpeakerControl] = []
     private(set) var isSearching = false
 
@@ -43,6 +48,9 @@ final class AppModel {
             if !speakers.isEmpty { return }
         }
     }
+
+    /// 実際に下げる対象になっている台数
+    var enabledCount: Int { speakers.filter { action.isEnabled($0) }.count }
 
     func speakers(of kind: SpeakerKind) -> [SpeakerControl] {
         speakers.filter { $0.kind == kind }

@@ -1,10 +1,9 @@
-import AppKit
 import SwiftUI
 
-/// このアプリについて。
+/// このアプリについて。設定画面のタブとして表示する。
 ///
-/// 設定画面は設定に専念させ、「何のためのアプリか」はここで順を追って説明する。
-/// 抽象的に書くと伝わらないので、番号付きで一段ずつ、実際に起きることを示す。
+/// 別ウインドウにするとモーダルが増えて煩雑になるので、設定と同じ窓に収める。
+/// 抽象的に書くと伝わらないため、番号付きで一段ずつ、実際に起きることを示す。
 struct AboutView: View {
 
     private var version: String {
@@ -13,10 +12,9 @@ struct AboutView: View {
 
     var body: some View {
         ScrollView { content }
-            .frame(width: 540, height: 680)
     }
 
-    /// スクロールの中身。ScrollView はオフスクリーン描画だと空になるため分けてある。
+    /// ScrollView はオフスクリーン描画だと空になるため、中身を分けてある。
     var content: some View {
         VStack(alignment: .leading, spacing: 24) {
             header
@@ -26,8 +24,8 @@ struct AboutView: View {
             section(4, L10n.t("対応しているスピーカー", "Supported speakers")) { supported }
             section(5, L10n.t("使いはじめる", "Getting started")) { usage }
         }
-        .padding(28)
-        .frame(width: 540)
+        .padding(24)
+        .frame(width: 500)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
@@ -37,13 +35,20 @@ struct AboutView: View {
         md(text).font(.callout).fixedSize(horizontal: false, vertical: true)
     }
 
+    private func box<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) { content() }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.10)))
+    }
+
     // MARK: - ヘッダー
 
     private var header: some View {
-        HStack(spacing: 16) {
-            Text("🙉").font(.system(size: 54))
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Kikazaru").font(.largeTitle).bold()
+        HStack(spacing: 14) {
+            Text("🙉").font(.system(size: 46))
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Kikazaru").font(.title).bold()
                 Text(L10n.t("マイクがオンの間だけ、BGMを下げます",
                             "Lowers the music while your mic is on"))
                     .foregroundStyle(.secondary)
@@ -68,13 +73,6 @@ struct AboutView: View {
             }
             content().padding(.leading, 34)
         }
-    }
-
-    private func box<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 10) { content() }
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.10)))
     }
 
     // MARK: - 1. 問題
@@ -156,8 +154,8 @@ struct AboutView: View {
                      L10n.t("マイクがオンになったことを検知します",
                             "It notices the microphone turned on"))
                 step("🙉", L10n.t("BGMが下がる", "The music drops"),
-                     L10n.t("スピーカーの音量を約0.1秒で下げます。メニューバーも 🙉 に変わります",
-                            "Volume drops in about 0.1 seconds. The menu bar turns 🙉"))
+                     L10n.t("約0.1秒で下げます。メニューバーも 🙉 に変わります",
+                            "Drops in about 0.1 seconds. The menu bar turns 🙉"))
                 step("🐵", L10n.t("話し終わる", "You stop talking"),
                      L10n.t("元の音量にそのまま戻します", "The original volume comes right back"))
             }
@@ -217,25 +215,13 @@ struct AboutView: View {
 
     private var usageSteps: [String] {
         L10n.isJapanese ? [
-            "メニューバーの 🐵 をクリックして **設定** を開く",
+            "この窓の **設定** タブを開く",
             "見つかったスピーカーのうち、下げたいものに **チェック** を入れる",
             "あとは普通に話すだけ。話している間だけ 🙉 に変わります",
         ] : [
-            "Click 🐵 in the menu bar and open **Settings**",
+            "Open the **Settings** tab in this window",
             "**Check** the speakers you want turned down",
             "That's it — the icon turns 🙉 while you talk",
         ]
-    }
-}
-
-enum AboutWindow {
-    @MainActor
-    static func make() -> NSWindow {
-        let window = NSWindow(contentViewController: NSHostingController(rootView: AboutView()))
-        window.title = L10n.t("Kikazaru について", "About Kikazaru")
-        window.styleMask = [.titled, .closable]
-        window.setContentSize(NSSize(width: 540, height: 680))
-        window.center()
-        return window
     }
 }
