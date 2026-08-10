@@ -4,14 +4,10 @@ import SwiftUI
 ///
 /// 別ウインドウにするとモーダルが増えて煩雑になるので、設定と同じ窓に収める。
 /// 抽象的に書くと伝わらないため、番号付きで一段ずつ、実際に起きることを示す。
-struct AboutView: View {
+struct AboutView {
 
     private var version: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
-    }
-
-    var body: some View {
-        ScrollView { content }
     }
 
     /// ScrollView はオフスクリーン描画だと空になるため、中身を分けてある。
@@ -25,8 +21,7 @@ struct AboutView: View {
             section(5, L10n.t("使いはじめる", "Getting started")) { usage }
         }
         .padding(24)
-        .frame(width: 500)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .frame(width: 500, alignment: .leading)
     }
 
     private func md(_ s: String) -> Text { Text(LocalizedStringKey(s)) }

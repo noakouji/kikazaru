@@ -13,23 +13,55 @@ struct SettingsView: View {
     let onChange: (Settings) -> Void
 
     var body: some View {
-        TabView(selection: Binding(
-            get: { model?.settingsTab ?? .settings },
-            set: { model?.settingsTab = $0 })
-        ) {
-            ScrollView { content }
-                .tabItem { Label(L10n.t("設定", "Settings"), systemImage: "gearshape") }
-                .tag(AppModel.Tab.settings)
-
-            AboutView()
-                .tabItem { Label(L10n.t("このアプリについて", "About"), systemImage: "info.circle") }
-                .tag(AppModel.Tab.about)
+        VStack(spacing: 0) {
+            tabBar
+            Divider()
+            ScrollView {
+                switch model?.settingsTab ?? .settings {
+                case .settings: content
+                case .about: AboutView().content
+                }
+            }
         }
         .frame(width: 500, height: 660)
+        .background(Color(nsColor: .windowBackgroundColor))
         .onChange(of: settings) { _, newValue in
             L10n.override = newValue.language
             onChange(newValue)
         }
+    }
+
+    /// 自前のタブ。TabView は macOS だと帯の背景も区切り線も付かず、
+    /// 中身と色が食い違って浮いて見えるため使わない。
+    private var tabBar: some View {
+        HStack(spacing: 0) {
+            tabButton(.settings, L10n.t("設定", "Settings"), "gearshape")
+            tabButton(.about, L10n.t("このアプリについて", "About"), "info.circle")
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity)
+        .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    private func tabButton(_ tab: AppModel.Tab, _ title: String, _ icon: String) -> some View {
+        let selected = (model?.settingsTab ?? .settings) == tab
+        return Button {
+            model?.settingsTab = tab
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                Text(title)
+            }
+            .font(.system(size: 13, weight: selected ? .semibold : .regular))
+            .foregroundStyle(selected ? Color.accentColor : Color.secondary)
+            .padding(.horizontal, 14).padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 7)
+                    .fill(selected ? Color.accentColor.opacity(0.14) : Color.clear)
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     /// スクロールの中身。
@@ -44,8 +76,7 @@ struct SettingsView: View {
             appearanceSection
         }
         .padding(24)
-        .frame(width: 500)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .frame(width: 500, alignment: .leading)
     }
 
     /// 実行時に組み立てた文字列でも Markdown（**太字** など）を解釈させる。
