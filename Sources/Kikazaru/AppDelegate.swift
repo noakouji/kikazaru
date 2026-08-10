@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var model: AppModel?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        guard !Self.terminateIfAlreadyRunning() else { return }
         let settings = Settings.load()
 
         let speakers = SpeakersAction()
@@ -50,4 +51,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool { true }
+
+    /// 同じアプリが既に動いていたら、こちらを終了する。
+    /// メニューバーに 2 つ並ぶと、どちらが効いているのか分からなくなるため。
+    private static func terminateIfAlreadyRunning() -> Bool {
+        guard let id = Bundle.main.bundleIdentifier else { return false }
+        let others = NSRunningApplication.runningApplications(withBundleIdentifier: id)
+            .filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
+        guard !others.isEmpty else { return false }
+        NSLog("Kikazaru はすでに起動しています。このプロセスを終了します。")
+        NSApp.terminate(nil)
+        return true
+    }
 }

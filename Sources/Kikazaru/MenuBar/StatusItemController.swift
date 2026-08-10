@@ -12,6 +12,7 @@ final class StatusItemController {
     private let model: AppModel
     private var settings: Settings
     private var settingsWindow: NSWindow?
+    private var aboutWindow: NSWindow?
 
     init(coordinator: Coordinator, model: AppModel, settings: Settings) {
         self.coordinator = coordinator
@@ -80,6 +81,11 @@ final class StatusItemController {
         prefs.target = self
         menu.addItem(prefs)
 
+        let about = NSMenuItem(title: L10n.t("Kikazaru について", "About Kikazaru"),
+                               action: #selector(openAbout), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
+
         let quit = NSMenuItem(title: L10n.t("Kikazaru を終了", "Quit Kikazaru"),
                               action: #selector(quit), keyEquivalent: "q")
         quit.target = self
@@ -121,7 +127,10 @@ final class StatusItemController {
 
     @objc private func openSettings() {
         if settingsWindow == nil {
-            settingsWindow = SettingsWindow.make(settings: settings, model: model) { [weak self] updated in
+            settingsWindow = SettingsWindow.make(
+                settings: settings, model: model,
+                onShowAbout: { [weak self] in self?.openAbout() }
+            ) { [weak self] updated in
                 guard let self else { return }
                 self.settings = updated
                 updated.save()
@@ -133,6 +142,15 @@ final class StatusItemController {
         }
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    @objc private func openAbout() {
+        if aboutWindow == nil {
+            aboutWindow = AboutWindow.make()
+            aboutWindow?.isReleasedWhenClosed = false
+        }
+        NSApp.activate(ignoringOtherApps: true)
+        aboutWindow?.makeKeyAndOrderFront(nil)
     }
 
     @objc private func quit() {

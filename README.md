@@ -48,14 +48,32 @@ Sonos 以外は **初期状態でオフ**。テレビなど下げてほしくな
 - Sonos アプリで **UPnP が有効**（アカウント → プライバシーとセキュリティ → UPnP）
 - 接続セキュリティの **Authentication は OFF**（初期値。ON にすると弾かれる）
 
-## ビルドと起動
+## インストール
+
+```bash
+./scripts/install.sh
+```
+
+`/Applications` へ入れ、ログイン時に自動起動するよう LaunchAgent を登録する。
+メニューバーに 🐵 が出れば動いている。Dock には表示されない。
+
+異常終了したときだけ launchd が起動し直す。メニューから終了したときは復活しない。
+
+取り外すときは `./scripts/uninstall.sh`。
+
+### 開発中のビルドだけ行う場合
 
 ```bash
 ./scripts/build-app.sh
 open build/Kikazaru.app
 ```
 
-メニューバーにアイコンが出れば動いている。Dock には表示されない。
+### 動作確認用のコマンド
+
+```bash
+./.build/debug/Kikazaru --scan       # 見つかるスピーカーを一覧する
+./.build/debug/Kikazaru --selftest   # 読み書きを確認する（音量は変えない）
+```
 
 ## 設定
 

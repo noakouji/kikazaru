@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State var settings: Settings
     @State private var hotkeyTrusted = HotkeyMonitor.isTrusted
     var model: AppModel?
+    var onShowAbout: (() -> Void)?
     let onChange: (Settings) -> Void
 
     var body: some View {
@@ -26,8 +27,6 @@ struct SettingsView: View {
     var content: some View {
         VStack(alignment: .leading, spacing: 22) {
             header
-            about
-            Divider()
             speakerSection
             duckingSection
             hotkeySection
@@ -55,52 +54,8 @@ struct SettingsView: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
             Spacer()
+            Button(L10n.t("このアプリについて", "About")) { onShowAbout?() }
         }
-    }
-
-    private var about: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(L10n.t("なぜ必要か", "Why this exists"), systemImage: "questionmark.circle")
-                .font(.headline)
-            md(L10n.t("""
-                Aqua Voice などの音声入力アプリは、録音中に **Mac につながったスピーカー** の音を \
-                自動で下げてくれます。
-
-                ところが **Sonos のようなネットワークスピーカーには効きません**。\
-                音を鳴らしているのが Mac ではなく Sonos 本体だからです。
-
-                結果、音楽が流れたままマイクに回り込み、歌詞や BGM が文字起こしに混ざります。
-                """, """
-                Dictation apps like Aqua Voice automatically lower **speakers connected to your Mac** \
-                while recording.
-
-                But this **does not work for network speakers like Sonos**, because the audio is \
-                played by the speaker itself, not by your Mac.
-
-                The music keeps playing, leaks into the microphone, and ends up in your transcript.
-                """))
-                .font(.callout).fixedSize(horizontal: false, vertical: true)
-
-            Divider()
-
-            Label(L10n.t("どう解決するか", "How it works"), systemImage: "checkmark.circle")
-                .font(.headline)
-            md(L10n.t("""
-                マイクが使われ始めたことを検知して、**スピーカー側の音量を直接下げます**。\
-                話し終われば元の音量に戻ります。
-
-                ヘッドホンに切り替えなくても、スピーカーで音楽を流したまま音声入力できます。
-                """, """
-                It detects when the microphone starts being used and **lowers the speaker's own \
-                volume directly**. When you stop talking, the volume comes back.
-
-                You can keep playing music on your speakers instead of switching to headphones.
-                """))
-                .font(.callout).fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color.secondary.opacity(0.08)))
     }
 
     // MARK: - スピーカー
@@ -164,14 +119,25 @@ struct SettingsView: View {
                      : L10n.t("探しています…", "Searching…"))
                     .font(.caption).foregroundStyle(.secondary)
             } else {
+                Text(L10n.t("チェックを入れたスピーカーだけ音量を下げます",
+                            "Only checked speakers will be turned down"))
+                    .font(.caption2).foregroundStyle(.secondary)
                 ForEach(found, id: \.id) { speaker in
-                    Toggle(isOn: Binding(
-                        get: { model?.isEnabled(speaker) ?? true },
-                        set: { model?.setEnabled($0, for: speaker) })
-                    ) {
-                        Text(speaker.name)
+                    let on = model?.isEnabled(speaker) ?? true
+                    HStack(spacing: 6) {
+                        Toggle(isOn: Binding(
+                            get: { on },
+                            set: { model?.setEnabled($0, for: speaker) })
+                        ) {
+                            Text(speaker.name)
+                        }
+                        .toggleStyle(.checkbox)
+                        Spacer()
+                        Text(on ? L10n.t("下げる", "Will lower")
+                                : L10n.t("そのまま", "Left alone"))
+                            .font(.caption2)
+                            .foregroundStyle(on ? Color.green : Color.secondary)
                     }
-                    .toggleStyle(.checkbox)
                 }
             }
         }
@@ -336,9 +302,11 @@ struct SettingsView: View {
 enum SettingsWindow {
     @MainActor
     static func make(settings: Settings, model: AppModel?,
+                     onShowAbout: @escaping () -> Void,
                      onChange: @escaping (Settings) -> Void) -> NSWindow {
         let controller = NSHostingController(
-            rootView: SettingsView(settings: settings, model: model, onChange: onChange))
+            rootView: SettingsView(settings: settings, model: model,
+                                   onShowAbout: onShowAbout, onChange: onChange))
         let window = NSWindow(contentViewController: controller)
         window.title = "Kikazaru"
         window.styleMask = [.titled, .closable]
