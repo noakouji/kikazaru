@@ -3,3 +3,5 @@ duck_state.json
 __pycache__/
 *.pyc
 .DS_Store
+.build/
+*.dSYM/
