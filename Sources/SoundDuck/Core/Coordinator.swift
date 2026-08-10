@@ -171,6 +171,8 @@ final class Coordinator {
     private func applyHotkeySetting() {
         if settings.hotkeyEnabled {
             if hotkey == nil { hotkey = HotkeyMonitor() }
+            hotkey?.stop()
+            hotkey?.keyCode = settings.hotkeyKeyCode
             hotkey?.start { [weak self] in
                 Task { @MainActor in self?.handleHotkeyRelease() }
             }

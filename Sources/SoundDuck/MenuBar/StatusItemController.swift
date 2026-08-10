@@ -27,20 +27,12 @@ final class StatusItemController {
     // MARK: - 表示
 
     private func configureButton() {
-        statusItem.button?.image = icon(for: .idle)
-        statusItem.button?.image?.isTemplate = true
-        statusItem.button?.toolTip = "SoundDuck"
+        updateIcon(for: .idle)
+        statusItem.button?.toolTip = "SoundDuck — 音声入力中だけ Sonos を下げます"
     }
 
     private func updateIcon(for state: Coordinator.State) {
-        statusItem.button?.image = icon(for: state)
-        statusItem.button?.image?.isTemplate = true
-    }
-
-    private func icon(for state: Coordinator.State) -> NSImage? {
-        let name = state == .ducked ? "speaker.wave.1" : "speaker.wave.2"
-        let label = state == .ducked ? "ダッキング中" : "待機中"
-        return NSImage(systemSymbolName: name, accessibilityDescription: label)
+        statusItem.button?.image = AppIcon.menuBar(ducked: state == .ducked)
     }
 
     // MARK: - メニュー

@@ -15,11 +15,15 @@ struct Settings: Sendable, Equatable {
     /// Mac 本体の音量も一緒に下げるか
     var systemVolumeEnabled: Bool = false
 
+    /// ホットキーとして監視するキーコード。既定は fn（Aqua Voice の既定キー）
+    var hotkeyKeyCode: Int64 = 63
+
     private enum Key {
         static let ratio = "duckRatio"
         static let delay = "releaseDelay"
         static let hotkey = "hotkeyEnabled"
         static let systemVolume = "systemVolumeEnabled"
+        static let hotkeyKeyCode = "hotkeyKeyCode"
     }
 
     static func load(from defaults: UserDefaults = .standard) -> Settings {
@@ -32,6 +36,9 @@ struct Settings: Sendable, Equatable {
         }
         s.hotkeyEnabled = defaults.bool(forKey: Key.hotkey)
         s.systemVolumeEnabled = defaults.bool(forKey: Key.systemVolume)
+        if defaults.object(forKey: Key.hotkeyKeyCode) != nil {
+            s.hotkeyKeyCode = Int64(defaults.integer(forKey: Key.hotkeyKeyCode))
+        }
         return s
     }
 
@@ -40,5 +47,6 @@ struct Settings: Sendable, Equatable {
         defaults.set(releaseDelay, forKey: Key.delay)
         defaults.set(hotkeyEnabled, forKey: Key.hotkey)
         defaults.set(systemVolumeEnabled, forKey: Key.systemVolume)
+        defaults.set(Int(hotkeyKeyCode), forKey: Key.hotkeyKeyCode)
     }
 }
