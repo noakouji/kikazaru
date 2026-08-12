@@ -10,7 +10,9 @@ const { t, formHref, kofiHref } = Astro.props
 const s = t.support
 
 // 無料で配っているものなので、支援の導線は目立たせすぎない。
-// ただし「どこにあるか分からない」のも困るので、独立した区画にはしておく。
+// ただし Ko-fi のページへ飛ばすと、金額を選ぶ前に一度サイトを離れることになる。
+// パネルをそのまま埋め込んで、ここで完結できるようにする。
+const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=true`
 ---
 
 <section class="section" id="support">
@@ -26,11 +28,18 @@ const s = t.support
         <a class="btn" href={formHref} target="_blank" rel="noopener">{s.bugBtn}</a>
       </div>
 
-      <div class="card">
+      <div class="card kofi-card">
         <span class="ico">☕️</span>
         <h3>{s.kofiTitle}</h3>
         <p>{s.kofiBody}</p>
-        <a class="btn kofi" href={kofiHref} target="_blank" rel="noopener">{s.kofiBtn}</a>
+        <iframe
+          class="kofi"
+          src={kofiPanel}
+          title={s.kofiBtn}
+          height="520"
+          loading="lazy"
+        ></iframe>
+        <a class="fallback" href={kofiHref} target="_blank" rel="noopener">{s.kofiFallback}</a>
       </div>
     </div>
   </div>
@@ -41,6 +50,9 @@ const s = t.support
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+    /* 右カードは Ko-fi のパネルぶん背が高い。
+       引き伸ばすと左カードに大きな空白ができるので、それぞれの高さに任せる */
+    align-items: start;
   }
 
   .card {
@@ -62,7 +74,6 @@ const s = t.support
   .card p {
     font-size: 14.5px;
     color: var(--ink-soft);
-    flex: 1;
     margin-bottom: 18px;
   }
 
@@ -94,6 +105,26 @@ const s = t.support
     color: var(--ink-faint);
     font-weight: 400;
   }
+
+  /* Ko-fi のパネルはあちらの意匠なので、枠で囲って「外部のもの」として見せる */
+  .kofi {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .kofi-card p { margin-bottom: 14px; }
+
+  .fallback {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    text-underline-offset: 3px;
+  }
+
+  .fallback:hover { color: var(--accent); }
 
   @media (max-width: 640px) {
     .cards { grid-template-columns: 1fr; }

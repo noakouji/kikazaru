@@ -80,6 +80,7 @@ export interface Copy {
     kofiTitle: string
     kofiBody: string
     kofiBtn: string
+    kofiFallback: string
   }
   foot: { made: string; install: string; support: string; copy: string }
 }
@@ -224,6 +225,7 @@ export const ja: Copy = {
     kofiBody:
       'Kikazaru はこれからも無料のままにします。もし毎日の作業が少し楽になったら、コーヒー1杯ぶんだけ気持ちをいただけると嬉しいです。',
     kofiBtn: 'コーヒーをおごる',
+    kofiFallback: 'うまく表示されないときは Ko-fi のページで',
   },
   foot: {
     made: 'Sonos と Google Home を使っていて自分が困ったので作りました。かなりニッチな道具だという自覚はあります。',
@@ -373,6 +375,7 @@ export const en: Copy = {
     kofiBody:
       'Kikazaru stays free. If it makes your day a little smoother, a coffee is always welcome.',
     kofiBtn: 'Buy me a coffee',
+    kofiFallback: 'Not loading? Open the Ko-fi page instead',
   },
   foot: {
     made: 'I use Sonos and Google Home, ran into this every day, and built it for myself. Fully aware of how niche it is.',
