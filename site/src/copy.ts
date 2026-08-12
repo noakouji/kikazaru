@@ -48,6 +48,14 @@ export interface Copy {
     heading: string
     items: { emoji: string; title: string; body: string }[]
     tail: string
+    demo: {
+      idle: string
+      ducking: string
+      micOff: string
+      micOn: string
+      meter: string
+      origin: string
+    }
   }
   speakers: {
     label: string
@@ -163,6 +171,14 @@ export const ja: Copy = {
       { emoji: '🐵', title: '話し終わる', body: '元の音量にそのまま戻します' },
     ],
     tail: 'メニューバーの絵文字が 🐵 と 🙉 で切り替わるので、いま下がっているかどうかが一目で分かります。待機中は何も動かないので、電池もほとんど食いません。',
+    demo: {
+      idle: '待機中',
+      ducking: '下げています',
+      micOff: 'マイク OFF',
+      micOn: 'マイク ON',
+      meter: '部屋のBGMの音量',
+      origin: 'もとの音量 20',
+    },
   },
   speakers: {
     label: '対応スピーカー',
@@ -351,6 +367,14 @@ export const en: Copy = {
       { emoji: '🐵', title: 'You stop talking', body: 'The original volume comes right back' },
     ],
     tail: 'The menu bar shows 🐵 or 🙉, so you can see at a glance whether the room is currently turned down. Nothing runs while it waits, so it barely touches your battery.',
+    demo: {
+      idle: 'Waiting',
+      ducking: 'Turned down',
+      micOff: 'Mic off',
+      micOn: 'Mic on',
+      meter: 'Room volume',
+      origin: 'was 20',
+    },
   },
   speakers: {
     label: 'Supported speakers',
