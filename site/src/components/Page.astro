@@ -26,7 +26,11 @@ const links = {
         <span class="brand-mark">🙉</span> Kikazaru
       </a>
       <div class="bar-right">
-        <a class="lang" href={t.altHref}>{t.altLabel}</a>
+        {/* 2択なので、いまどちらを見ているかが分かる分割式にする */}
+        <div class="lang" role="group" aria-label="Language">
+          <a href="/" class:list={['seg', { on: t.lang === 'ja' }]} aria-current={t.lang === 'ja' ? 'true' : undefined} title="日本語">JA</a>
+          <a href="/en" class:list={['seg', { on: t.lang === 'en' }]} aria-current={t.lang === 'en' ? 'true' : undefined} title="English">EN</a>
+        </div>
         <a class="bar-dl" href={links.download} download>{t.nav.download}</a>
       </div>
     </div>
@@ -140,16 +144,40 @@ const links = {
     gap: 14px;
   }
 
+  /* 言語切り替え。押しボタンではなく「いまどちら側にいるか」を示す目盛りとして見せる */
   .lang {
-    font-size: 13.5px;
-    color: var(--ink-soft);
-    text-decoration: none;
-    padding: 6px 10px;
-    border-radius: 7px;
+    display: inline-flex;
+    align-items: stretch;
     border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 2px;
   }
 
-  .lang:hover { background: var(--paper-deep); }
+  .seg {
+    /* 左右の幅を揃えると、押しボタンではなく目盛りとして読める */
+    min-width: 34px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: var(--ink-faint);
+    text-decoration: none;
+    padding: 7px 0;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    transition: color 0.14s ease, background 0.14s ease;
+  }
+
+  .seg:hover { color: var(--ink); }
+
+  .seg.on {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
 
   .bar-dl {
     font-size: 13.5px;
