@@ -57,7 +57,8 @@ extension SettingsView {
 /// 外部リンクの置き場。差し替えが1か所で済むようにまとめる。
 enum Links {
     /// 要望・バグ報告の受け口
-    static let feedbackForm = "https://forms.gle/REPLACE_ME"
+    static let feedbackForm =
+        "https://docs.google.com/forms/d/e/1FAIpQLSefXhorrRPZcoxn_hRgREMqL48qcicouq6lu3wExYi97xUYjQ/viewform"
     /// 配布サイト
     static let website = "https://kikazaru.noplan-inc.com"
 }
