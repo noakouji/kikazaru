@@ -1,6 +1,7 @@
 ---
 import type { Copy } from '../copy'
 import Base from '../layouts/Base.astro'
+import Icon from './Icon.astro'
 
 interface Props {
   t: Copy
@@ -16,7 +17,7 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
 
 <Base title={c.title} description={c.description} htmlLang={t.htmlLang} altHref={altPage}>
   <nav class="topbar">
-    <div class="wrap bar-inner">
+    <div class="shell bar-inner">
       <a class="back" href={home}>← {c.back}</a>
       <div class="lang" role="group" aria-label="Language">
         <a href="/support" class:list={['seg', { on: t.lang === 'ja' }]} title="日本語">JA</a>
@@ -25,44 +26,61 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
     </div>
   </nav>
 
-  <article class="wrap doc">
-    <header class="head">
-      <span class="mark">🙉</span>
+  <header class="head">
+    <div class="shell">
+      {/* 絵文字は必ず何かに属させる。単独で置くと孤立して見える */}
+      <div class="badge"><span>🙉</span></div>
       <h1>{c.heading}</h1>
       <p class="lead">{c.lead}</p>
-    </header>
+    </div>
+  </header>
 
-    {/* 先に払う場所を出す。読み終わらないと払えない作りにしない */}
-    <section class="pay" id="pay">
-      <h2>{c.payHeading}</h2>
+  {/* 読み終わらないと払えない作りにしない。金額は最初に見せる */}
+  <section class="pay">
+    <div class="shell pay-inner">
+      <div class="pay-side">
+        <h2><Icon name="coffee" size={20} />{c.payHeading}</h2>
+        <p>{c.payNote}</p>
+      </div>
       <iframe class="kofi" src={kofiPanel} title={c.payHeading} height="520" loading="lazy"></iframe>
-      <p class="fine">{c.payNote}</p>
-    </section>
+    </div>
+  </section>
 
+  <main class="shell body">
     <section>
       <h2>{c.freeHeading}</h2>
-      {c.freeBody.map((p) => <p>{p}</p>)}
+      {c.freeBody.map((p) => <p class="para">{p}</p>)}
     </section>
 
     <section>
       <h2>{c.moneyHeading}</h2>
-      <p>{c.moneyBody}</p>
+      <p class="para">{c.moneyBody}</p>
       <ul class="spend">
-        {c.moneyList.map((item) => <li>{item}</li>)}
+        {c.moneyList.map((item) => (
+          <li>
+            <span class="spend-ico"><Icon name={item.icon as any} size={20} /></span>
+            <span class="spend-text">
+              <strong>{item.title}</strong>
+              <small>{item.note}</small>
+            </span>
+            <span class="cost">{item.cost}</span>
+          </li>
+        ))}
       </ul>
     </section>
 
-    <section>
-      <h2>{c.nothingHeading}</h2>
-      <p>{c.nothingBody}</p>
+    <section class="note-block">
+      <h2><Icon name="check" size={18} />{c.nothingHeading}</h2>
+      <p class="para">{c.nothingBody}</p>
     </section>
 
     <section>
       <h2>{c.otherHeading}</h2>
-      <p>{c.otherBody}</p>
+      <p class="para">{c.otherBody}</p>
       <div class="others">
         {c.otherList.map((o) => (
           <div class="other">
+            <span class="other-ico"><Icon name={o.icon as any} size={22} /></span>
             <h3>{o.title}</h3>
             <p>{o.body}</p>
           </div>
@@ -72,11 +90,18 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
 
     <p class="closing">{c.closing}</p>
 
-    <p class="back-foot"><a href={home}>← {c.back}</a></p>
-  </article>
+    <a class="back-foot" href={home}>
+      <Icon name="arrow" size={17} />{c.back}
+    </a>
+  </main>
 </Base>
 
 <style>
+  .shell {
+    width: min(720px, calc(100% - 40px));
+    margin-inline: auto;
+  }
+
   .topbar {
     position: sticky;
     top: 0;
@@ -130,123 +155,185 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  /* 読み物なので本文幅を絞る。トップページの880pxだと長すぎる */
-  .doc {
-    width: min(620px, calc(100% - 40px));
-    padding: 56px 0 90px;
+  .head { padding: 58px 0 44px; }
+
+  .badge {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    background: var(--dark);
+    display: grid;
+    place-items: center;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
   }
 
-  .head { margin-bottom: 44px; }
-
-  .mark {
-    font-size: 52px;
-    line-height: 1;
-    display: block;
-    margin-bottom: 18px;
-  }
+  .badge span { font-size: 36px; line-height: 1; }
 
   h1 {
-    font-size: clamp(24px, 5vw, 34px);
-    margin-bottom: 18px;
+    font-size: clamp(25px, 5vw, 36px);
+    margin-bottom: 16px;
   }
 
   .lead {
     color: var(--ink-soft);
     font-size: 16px;
+    max-width: 34em;
   }
 
-  section { margin-bottom: 44px; }
+  /* 払う場所。面の色を変えて、本文とは別のものだと分かるようにする */
+  .pay {
+    background: var(--paper-deep);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 34px 0;
+  }
+
+  .pay-inner {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .pay-side { padding-top: 6px; }
+
+  .pay-side h2 { margin-bottom: 10px; }
+  .pay-side p { font-size: 14px; color: var(--ink-soft); }
+
+  .kofi {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    display: block;
+  }
+
+  .body { padding: 52px 0 90px; }
+
+  section { margin-bottom: 46px; }
 
   h2 {
     font-size: 18px;
     margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
   }
 
-  section p {
+  h2 :global(.icon) { color: var(--accent); }
+
+  .para {
     color: var(--ink-soft);
     font-size: 15px;
   }
 
-  section p + p { margin-top: 12px; }
+  .para + .para { margin-top: 12px; }
 
-  /* 払う場所。読み進めなくても目に入るよう、面で区切る */
-  .pay {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 24px;
-  }
-
-  .kofi {
-    width: 100%;
-    max-width: 440px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: #fff;
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  .fine {
-    font-size: 13px;
-    color: var(--ink-faint);
-  }
-
+  /* 何にいくら使うのかを、金額まで並べて1行で読ませる */
   .spend {
-    margin: 14px 0 0;
+    margin: 18px 0 0;
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 10px;
+    gap: 2px;
   }
 
   .spend li {
-    font-size: 14.5px;
-    color: var(--ink-soft);
-    padding-left: 20px;
-    position: relative;
-  }
-
-  .spend li::before {
-    content: '·';
-    position: absolute;
-    left: 6px;
-    color: var(--accent);
-    font-weight: 700;
-  }
-
-  .others {
     display: grid;
-    gap: 2px;
-    margin-top: 16px;
-  }
-
-  .other {
-    padding: 14px 0;
+    grid-template-columns: 40px 1fr auto;
+    align-items: start;
+    gap: 4px;
+    padding: 15px 0;
     border-bottom: 1px solid var(--line);
   }
 
-  .other h3 {
-    font-size: 15px;
-    margin-bottom: 4px;
+  .spend li:first-child { border-top: 1px solid var(--line); }
+
+  .spend-ico { color: var(--ink-faint); padding-top: 1px; }
+
+  .spend-text { display: block; }
+  .spend-text strong { font-size: 15px; font-weight: 600; display: block; }
+
+  .spend-text small {
+    display: block;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    line-height: 1.7;
   }
 
-  .other p { font-size: 14px; }
+  /* 等幅にすると日本語の字間が開いて間延びする。本文と同じ書体で色だけ変える */
+  .cost {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    padding-left: 16px;
+    padding-top: 3px;
+  }
+
+  /* 「見返りは無い」は言いにくい話なので、面で囲って正面から置く */
+  .note-block {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+
+  .note-block h2 { margin-bottom: 10px; }
+
+  .others {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .other {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .other-ico {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .other h3 { font-size: 14.5px; margin-bottom: 6px; }
+  .other p { font-size: 13.5px; color: var(--ink-soft); }
 
   .closing {
     color: var(--ink-soft);
     font-size: 15px;
-    padding-top: 26px;
+    padding-top: 28px;
     border-top: 1px solid var(--line);
   }
 
   .back-foot {
-    margin-top: 34px;
+    margin-top: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
   }
 
-  .back-foot a {
-    color: var(--accent);
-    text-underline-offset: 3px;
+  .back-foot :global(.icon) { transform: rotate(180deg); }
+
+  @media (max-width: 780px) {
+    .pay-inner { grid-template-columns: 1fr; }
+    .kofi { max-width: 440px; }
+    .others { grid-template-columns: 1fr; }
   }
 </style>

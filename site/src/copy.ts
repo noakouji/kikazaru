@@ -93,14 +93,14 @@ export interface Copy {
     freeBody: [string, string]
     moneyHeading: string
     moneyBody: string
-    moneyList: string[]
+    moneyList: { icon: string; title: string; note: string; cost: string }[]
     nothingHeading: string
     nothingBody: string
     payHeading: string
     payNote: string
     otherHeading: string
     otherBody: string
-    otherList: { title: string; body: string }[]
+    otherList: { icon: string; title: string; body: string }[]
     closing: string
   }
 }
@@ -267,20 +267,35 @@ export const ja: Copy = {
     moneyHeading: 'もらったお金は何に消えるか',
     moneyBody: '正直に書くと、いまのところ出ていくお金はこれくらいです。',
     moneyList: [
-      'Apple の開発者登録（年 99 ドル）。ここが埋まると、インストール時の警告が消えて右クリックの儀式が要らなくなります',
-      '対応させたいスピーカーの実機。Bose SoundTouch はまだ手元になく、コードだけ書いて未確認のままです',
-      'サイトとドメインの維持費',
+      {
+        icon: 'badge',
+        title: 'Apple の開発者登録',
+        note: 'ここが埋まると、インストール時の警告が消えて右クリックの儀式が要らなくなります',
+        cost: '年 99 ドル',
+      },
+      {
+        icon: 'speaker',
+        title: '対応させたいスピーカーの実機',
+        note: 'Bose SoundTouch はまだ手元になく、コードだけ書いて未確認のままです',
+        cost: '未購入',
+      },
+      {
+        icon: 'globe',
+        title: 'サイトとドメインの維持費',
+        note: 'いまは無料枠に収まっています。人が増えたら足が出ます',
+        cost: '現状ほぼ 0 円',
+      },
     ],
     nothingHeading: '見返りはありません',
     nothingBody: '支援した人だけ機能が増える、みたいなことはしません。全員が同じものを使えるほうが、この手の道具は健全だと思っています。名前を出すこともしません（Ko-fi のメッセージ欄に書いてもらえれば返信はします）。',
-    payHeading: 'ここから',
+    payHeading: 'コーヒーをおごる',
     payNote: '300円から選べます。カードか PayPal で、アカウント登録は要りません。',
     otherHeading: 'お金以外で助かること',
     otherBody: 'むしろこちらのほうが効きます。',
     otherList: [
-      { title: 'Bose SoundTouch を持っている', body: '実機がなくて未検証のままです。動いた/動かなかったを教えてもらえると、対応表が1行埋まります' },
-      { title: '動かなかった環境を教える', body: 'どのMac・どのmacOS・どのスピーカーで駄目だったか。それだけで直せることが多いです' },
-      { title: '同じことで困っている人に渡す', body: 'かなりニッチな道具なので、届く相手は限られています' },
+      { icon: 'speaker', title: 'Bose SoundTouch を持っている', body: '実機がなくて未検証のままです。動いた・動かなかったを教えてもらえると、対応表が1行埋まります' },
+      { icon: 'bug', title: '動かなかった環境を教える', body: 'どの Mac・どの macOS・どのスピーカーで駄目だったか。それだけで直せることが多いです' },
+      { icon: 'share', title: '同じことで困っている人に渡す', body: 'かなりニッチな道具なので、届く相手は限られています' },
     ],
     closing: '読んでくれてありがとうございます。使ってもらえるだけで作った甲斐があります。',
   },
@@ -448,20 +463,35 @@ export const en: Copy = {
     moneyHeading: 'Where the money actually goes',
     moneyBody: 'Being honest about it, this is roughly what it costs to keep going.',
     moneyList: [
-      "Apple's developer program ($99/year). Once that is covered, the scary install warning disappears and the right-click ritual goes away",
-      'Speakers to test against. Bose SoundTouch support is written but has never touched real hardware',
-      'Hosting and the domain',
+      {
+        icon: 'badge',
+        title: "Apple's developer program",
+        note: 'Once that is covered, the scary install warning disappears and the right-click ritual goes away',
+        cost: '$99 / year',
+      },
+      {
+        icon: 'speaker',
+        title: 'Speakers to test against',
+        note: 'Bose SoundTouch support is written but has never touched real hardware',
+        cost: 'not bought yet',
+      },
+      {
+        icon: 'globe',
+        title: 'Hosting and the domain',
+        note: 'Still inside the free tier. That changes if enough people show up',
+        cost: '~$0 for now',
+      },
     ],
     nothingHeading: 'You get nothing in return',
     nothingBody: 'No supporter-only features. Everyone runs the same build — for a tool like this, that feels right. No public list of names either, though I will reply if you leave a message on Ko-fi.',
-    payHeading: 'Here',
+    payHeading: 'Buy me a coffee',
     payNote: 'From ¥300. Card or PayPal, no account needed.',
     otherHeading: 'Things that help more than money',
     otherBody: 'Genuinely, these are worth more.',
     otherList: [
-      { title: 'You own a Bose SoundTouch', body: 'The code exists but has never run against real hardware. Telling me whether it worked fills in a row of the table' },
-      { title: 'Tell me where it broke', body: 'Which Mac, which macOS, which speaker. That is usually enough to fix it' },
-      { title: 'Pass it to someone with the same problem', body: 'It is a niche tool, so it only reaches people through people' },
+      { icon: 'speaker', title: 'You own a Bose SoundTouch', body: 'The code exists but has never run against real hardware. Telling me whether it worked fills in a row of the table' },
+      { icon: 'bug', title: 'Tell me where it broke', body: 'Which Mac, which macOS, which speaker. That is usually enough to fix it' },
+      { icon: 'share', title: 'Pass it to someone with the same problem', body: 'It is a niche tool, so it only reaches people through people' },
     ],
     closing: 'Thanks for reading. People actually using it is already the point.',
   },
