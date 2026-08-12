@@ -9,6 +9,10 @@ struct SettingsView: View {
 
     @State internal var settings: Settings
     @State private var hotkeyTrusted = HotkeyMonitor.isTrusted
+    @State internal var launchAtLogin = LoginItem.isEnabled {
+        didSet { loginItemError = LoginItem.setEnabled(launchAtLogin) }
+    }
+    @State internal var loginItemError: String?
     internal var model: AppModel?
     let onChange: (Settings) -> Void
 
@@ -73,6 +77,8 @@ struct SettingsView: View {
             appSection
             duckingSection
             hotkeySection
+            Divider()
+            generalSection
             Divider()
             appearanceSection
         }

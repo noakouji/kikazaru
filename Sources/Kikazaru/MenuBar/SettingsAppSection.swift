@@ -21,13 +21,13 @@ extension SettingsView {
                 .font(.headline)
 
             Text(L10n.t(
-                "マイクを使ったアプリがここに並びます。音声入力は少し下げるだけ、オンライン会議は完全にミュート、と分けられます。",
-                "Apps that use your microphone appear here. Lower the volume for dictation, mute completely for meetings."))
+                "マイクを使ったアプリがここに並びます。アプリごとに、音量を下げるか完全にミュートするかを選べます。音声入力は下げる、オンライン会議はミュート、が目安です。",
+                "Apps that use your microphone appear here. Choose per app whether to lower the volume or mute it completely. Dictation usually works well lowered; meetings are better muted."))
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            appGroup(L10n.t("🎤 音声入力", "🎤 Dictation"), mode: .lower)
-            appGroup(L10n.t("👥 オンライン会議", "👥 Meetings"), mode: .mute)
+            appGroup(L10n.t("🔉 音量を下げる", "🔉 Lower the volume"), mode: .lower)
+            appGroup(L10n.t("🔇 完全にミュートする", "🔇 Mute completely"), mode: .mute)
 
             HStack(spacing: 10) {
                 Text(L10n.t("表に無いアプリは", "Apps not listed")).font(.callout)
