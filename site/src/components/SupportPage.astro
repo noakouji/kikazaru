@@ -48,11 +48,6 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
 
   <main class="shell body">
     <section>
-      <h2>{c.freeHeading}</h2>
-      {c.freeBody.map((p) => <p class="para">{p}</p>)}
-    </section>
-
-    <section>
       <h2>{c.moneyHeading}</h2>
       <p class="para">{c.moneyBody}</p>
       <ul class="spend">
@@ -67,11 +62,6 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
           </li>
         ))}
       </ul>
-    </section>
-
-    <section class="note-block">
-      <h2><Icon name="check" size={18} />{c.nothingHeading}</h2>
-      <p class="para">{c.nothingBody}</p>
     </section>
 
     <section>
@@ -272,16 +262,6 @@ const altPage = t.lang === 'ja' ? '/en/support' : '/support'
     padding-left: 16px;
     padding-top: 3px;
   }
-
-  /* 「見返りは無い」は言いにくい話なので、面で囲って正面から置く */
-  .note-block {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 22px 24px;
-  }
-
-  .note-block h2 { margin-bottom: 10px; }
 
   .others {
     display: grid;

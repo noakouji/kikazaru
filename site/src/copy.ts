@@ -89,13 +89,9 @@ export interface Copy {
     back: string
     heading: string
     lead: string
-    freeHeading: string
-    freeBody: [string, string]
     moneyHeading: string
     moneyBody: string
     moneyList: { icon: string; title: string; note: string; cost: string }[]
-    nothingHeading: string
-    nothingBody: string
     payHeading: string
     payNote: string
     otherHeading: string
@@ -259,11 +255,6 @@ export const ja: Copy = {
     back: 'Kikazaru にもどる',
     heading: '払いたい人だけ、ここから',
     lead: 'Kikazaru は無料です。これからも無料のままにします。このページは払いたい人のために置いてあるだけなので、読み飛ばしてもらって構いません。',
-    freeHeading: 'なぜ無料なのか',
-    freeBody: [
-      '自分が毎日困っていたので作りました。同じことで困っている人に、値段のせいで試してもらえないのが一番もったいない。',
-      'それに、対応スピーカーを増やすには持っている人に試してもらうしかありません。Bose SoundTouch はいまも実機がなくて、コードだけ書いて止まっています。',
-    ],
     moneyHeading: 'もらったお金は何に消えるか',
     moneyBody: 'いま出ていくお金はこれくらいです。',
     moneyList: [
@@ -286,8 +277,6 @@ export const ja: Copy = {
         cost: '現状ほぼ 0 円',
       },
     ],
-    nothingHeading: '見返りはありません',
-    nothingBody: '支援した人だけ機能が増える、みたいなことはしません。全員が同じものを使えたほうがいい。名前を並べることもしません。Ko-fi のメッセージ欄に何か書いてもらえれば、返信だけはします。',
     payHeading: 'コーヒーをおごる',
     payNote: '300円から選べます。カードか PayPal で、アカウント登録は要りません。',
     otherHeading: 'お金以外で助かること',
@@ -455,11 +444,6 @@ export const en: Copy = {
     back: 'Back to Kikazaru',
     heading: 'If it earned its place, buy me a coffee',
     lead: 'Kikazaru is free, and it stays free. This page exists for people who want to chip in — not because anyone has to.',
-    freeHeading: 'Why it stays free',
-    freeBody: [
-      'I built it because it annoyed me every day. It would be a shame if someone with the same problem skipped it over a price tag.',
-      'And the only way to support more speakers is for people who own them to try it. Bose SoundTouch is still sitting there — code written, hardware never bought.',
-    ],
     moneyHeading: 'Where the money actually goes',
     moneyBody: 'Being honest about it, this is roughly what it costs to keep going.',
     moneyList: [
@@ -482,8 +466,6 @@ export const en: Copy = {
         cost: '~$0 for now',
       },
     ],
-    nothingHeading: 'You get nothing in return',
-    nothingBody: 'No supporter-only features. Everyone runs the same build. No public list of names either. Leave a message on Ko-fi and I will at least write back.',
     payHeading: 'Buy me a coffee',
     payNote: 'From ¥300. Card or PayPal, no account needed.',
     otherHeading: 'Things that help more than money',
