@@ -46,13 +46,11 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
 </section>
 
 <style>
+  /* Ko-fi のパネルは背が高く、横に並べると左が空白だらけになる。
+     縦に積んで、読む順（まず不具合、次に支援）をそのまま並びにする */
   .cards {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 16px;
-    /* 右カードは Ko-fi のパネルぶん背が高い。
-       引き伸ばすと左カードに大きな空白ができるので、それぞれの高さに任せる */
-    align-items: start;
   }
 
   .card {
@@ -75,6 +73,8 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
     font-size: 14.5px;
     color: var(--ink-soft);
     margin-bottom: 18px;
+    /* 横幅いっぱいだと1行が長くなりすぎる */
+    max-width: 42em;
   }
 
   .btn {
@@ -108,7 +108,9 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
 
   /* Ko-fi のパネルはあちらの意匠なので、枠で囲って「外部のもの」として見せる */
   .kofi {
+    /* パネル自体の中身は 400px 程度。広げても余白が増えるだけなので抑える */
     width: 100%;
+    max-width: 440px;
     border: 1px solid var(--line);
     border-radius: 10px;
     background: #fff;
@@ -126,7 +128,5 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
 
   .fallback:hover { color: var(--accent); }
 
-  @media (max-width: 640px) {
-    .cards { grid-template-columns: 1fr; }
-  }
+
 </style>
