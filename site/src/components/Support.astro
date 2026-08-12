@@ -1,0 +1,111 @@
+---
+interface Props {
+  formHref: string
+  kofiHref: string
+}
+const { formHref, kofiHref } = Astro.props
+
+// 無料で配っているものなので、支援の導線は目立たせすぎない。
+// ただし「どこにあるか分からない」のも困るので、独立した区画にはしておく。
+---
+
+<section class="section" id="support">
+  <div class="wrap">
+    <p class="section-label">これから</p>
+    <h2>困ったことと、よかったこと</h2>
+
+    <div class="cards">
+      <div class="card">
+        <span class="ico">🛠</span>
+        <h3>うまく動かない・こうしてほしい</h3>
+        <p>
+          対応してほしいスピーカーや、動かなかった環境を教えてください。
+          Bose SoundTouch はまだ実機で試せていないので、お持ちの方の報告が特に助かります。
+        </p>
+        <a class="btn" href={formHref} target="_blank" rel="noopener">
+          要望・バグ報告を送る
+        </a>
+      </div>
+
+      <div class="card">
+        <span class="ico">☕️</span>
+        <h3>役に立ったら</h3>
+        <p>
+          Kikazaru はこれからも無料のままにします。
+          もし毎日の作業が少し楽になったら、コーヒー1杯ぶんだけ気持ちをいただけると嬉しいです。
+        </p>
+        {kofiHref ? (
+          <a class="btn kofi" href={kofiHref} target="_blank" rel="noopener">
+            コーヒーをおごる
+          </a>
+        ) : (
+          <span class="btn soon">準備中</span>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ico { font-size: 26px; margin-bottom: 10px; }
+
+  .card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    flex: 1;
+    margin-bottom: 18px;
+  }
+
+  .btn {
+    align-self: flex-start;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--dark);
+    color: var(--dark);
+  }
+
+  .btn:hover { background: var(--dark); color: var(--paper); }
+
+  .btn.kofi {
+    border-color: var(--accent);
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.kofi:hover { opacity: 0.88; background: var(--accent); color: #fff; }
+
+  .btn.soon {
+    border-style: dashed;
+    border-color: var(--line);
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>

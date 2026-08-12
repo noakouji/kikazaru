@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro'
 import Hero from '../components/Hero.astro'
 import Problem from '../components/Problem.astro'
 import Install from '../components/Install.astro'
+import Support from '../components/Support.astro'
 
 // 差し替えが1か所で済むように、外部リンクはここにまとめる。
 const links = {
@@ -30,6 +31,13 @@ const speakers = [
   title="Kikazaru — マイクがオンの間だけ、部屋のBGMを下げる Mac アプリ"
   description="音声入力やオンライン会議のあいだ、Sonos や Google Home の音量を自動で下げます。話し終わると元に戻ります。macOS 用・無料。"
 >
+  <nav class="topbar">
+    <div class="wrap bar-inner">
+      <span class="brand"><span class="brand-mark">🙉</span> Kikazaru</span>
+      <a class="bar-dl" href={links.download} download>ダウンロード</a>
+    </div>
+  </nav>
+
   <Hero downloadHref={links.download} size={downloadSize} />
   <Problem />
 
@@ -74,7 +82,24 @@ const speakers = [
     </div>
   </section>
 
+  <section class="section">
+    <div class="wrap">
+      <p class="section-label">なぜ作ったか</p>
+      <h2>これから、喋って書く時間はもっと増える</h2>
+      <p class="lead ctx">
+        AI に指示を出すのも、議事録をまとめるのも、キーボードより口のほうが速い場面が増えました。
+        Aqua Voice のような音声入力を一日中使うようになると、それまで気にならなかった
+        「スピーカーの音がマイクに入る」が、毎回の小さなストレスとして効いてきます。
+      </p>
+      <p class="lead ctx">
+        そのたびに音楽を止めたり、ヘッドホンに付け替えたりするのが面倒で作りました。
+        <strong>Kikazaru を入れておけば、音楽は流したままで構いません。</strong>
+      </p>
+    </div>
+  </section>
+
   <Install formHref={links.form} />
+  <Support formHref={links.form} kofiHref={links.kofi} />
 
   <footer class="foot">
     <div class="wrap">
@@ -83,8 +108,8 @@ const speakers = [
         かなりニッチな道具だという自覚はあります。
       </p>
       <div class="foot-links">
-        <a href={links.form} target="_blank" rel="noopener">要望・バグ報告を送る</a>
-        {links.kofi && <a href={links.kofi} target="_blank" rel="noopener">コーヒーをおごる ☕️</a>}
+        <a href="#install">インストール方法</a>
+        <a href="#support">要望・バグ報告</a>
       </div>
       <p class="copy">Kikazaru · macOS 14 以降 · 無料</p>
     </div>
@@ -92,6 +117,46 @@ const speakers = [
 </Base>
 
 <style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(247, 245, 241, 0.86);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .brand {
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .brand-mark { font-size: 19px; }
+
+  .bar-dl {
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 7px;
+    background: var(--dark);
+    color: var(--paper);
+  }
+
+  .ctx { max-width: 38em; }
+  .ctx + .ctx { margin-top: 14px; }
+  .ctx strong { color: var(--ink); }
+
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
