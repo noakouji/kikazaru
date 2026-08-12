@@ -82,7 +82,7 @@ export interface Copy {
     kofiBtn: string
     kofiFallback: string
   }
-  foot: { made: string; install: string; support: string; copy: string }
+  foot: { install: string; support: string; copy: string }
   page: {
     title: string
     description: string
@@ -235,7 +235,7 @@ export const ja: Copy = {
     heading: '不具合の報告と、支援について',
     bugTitle: 'うまく動かない・こうしてほしい',
     bugBody:
-      '対応してほしいスピーカーや、動かなかった環境を教えてください。Bose SoundTouch はまだ実機で試せていないので、お持ちの方の報告が特に助かります。',
+      '対応してほしいスピーカーや、動かなかった環境を教えてください。',
     bugBtn: '要望・バグ報告を送る',
     kofiTitle: '役に立ったら',
     kofiBody:
@@ -244,7 +244,6 @@ export const ja: Copy = {
     kofiFallback: 'うまく表示されないときは Ko-fi のページで',
   },
   foot: {
-    made: 'Sonos と Google Home を使っていて自分が困ったので作りました。かなりニッチなのは分かっています。',
     install: 'インストール方法',
     support: '要望・バグ報告',
     copy: 'Kikazaru · macOS 14 以降 · 無料',
@@ -424,7 +423,7 @@ export const en: Copy = {
     heading: 'What broke, and what helped',
     bugTitle: 'Something is off, or you want more',
     bugBody:
-      'Tell me which speaker you want supported, or where it failed. Bose SoundTouch has never been tried on real hardware, so a report from an owner would help a lot.',
+      'Tell me which speaker you want supported, or where it failed.',
     bugBtn: 'Send feedback',
     kofiTitle: 'If it earned its place',
     kofiBody:
@@ -433,7 +432,6 @@ export const en: Copy = {
     kofiFallback: 'Not loading? Open the Ko-fi page instead',
   },
   foot: {
-    made: 'I use Sonos and Google Home, ran into this every day, and built it for myself. Fully aware of how niche it is.',
     install: 'How to install',
     support: 'Feedback',
     copy: 'Kikazaru · macOS 14+ · Free',
