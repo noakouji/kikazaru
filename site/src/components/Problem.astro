@@ -1,47 +1,43 @@
 ---
-// 何が困るのかを、実際に起きる形で見せる。
-// 仕組みの説明から入っても伝わらないので、まず結果を出す。
+import BeforeAfter from './BeforeAfter.astro'
+
+// 「困っていること」ではなく「やりたいこと」から入る。
+// 音楽を止めたいのではなく、流したまま働きたい。そこを先に置く。
 ---
 
 <section class="problem">
   <div class="wrap">
-    <p class="label">こういうことが起きます</p>
-    <h2>音声入力に、スピーカーの歌詞が混ざる</h2>
-
-    <div class="demo">
-      <div class="row">
-        <span class="tag">話した内容</span>
-        <p class="said">さっきの議事録から、ネクストアクションだけ箇条書きにして</p>
-      </div>
-      <div class="row">
-        <span class="tag">実際に入力された文字</span>
-        <p class="got">
-          さっきの議事録から、ネクストアクションだけ箇条書きにして<span class="gap"> </span><mark>君と歩いた あの日の</mark>
-        </p>
-      </div>
-    </div>
-
-    <p class="why">
-      マイクが自分の声と一緒に、スピーカーから流れている音楽まで拾ってしまうためです。
-      オンライン会議でも同じことが起きて、相手側に音楽が流れ込みます。
+    <p class="label">やりたいこと</p>
+    <h2>音楽は流したまま、喋って仕事したい</h2>
+    <p class="want">
+      作業中はスピーカーで音楽をかけておきたい。でも音声入力もオンライン会議も使う。
+      この2つを両立させようとすると、いまは毎回どちらかを我慢することになります。
     </p>
 
-    <div class="split">
-      <div class="case ok">
-        <span class="mark">自動で下がる</span>
-        <p>Mac につないだスピーカー<br /><small>Bluetooth・USB・AirPlay など</small></p>
-      </div>
-      <div class="case ng">
-        <span class="mark">下がらない</span>
-        <p>Sonos / Google Home<br /><small>スピーカー自身が鳴らしているため</small></p>
-      </div>
-    </div>
+    <BeforeAfter />
 
-    <p class="why">
-      音声入力アプリが下げてくれるのは、Mac につないだスピーカーだけです。
-      ネットワークスピーカーの音は Mac が握っていないので、止めようがありません。
-      <strong>そこだけを埋めるのが Kikazaru です。</strong>
-    </p>
+    <div class="cause">
+      <h3>なぜ、勝手に止まってくれないのか</h3>
+      <p>
+        音声入力アプリも音を下げてはくれます。ただし止められるのは
+        <strong>Mac につないだスピーカーだけ</strong>です。
+      </p>
+      <div class="split">
+        <div class="case ok">
+          <span class="mark">自動で下がる</span>
+          <p>Mac につないだスピーカー<br /><small>Bluetooth・USB・AirPlay など</small></p>
+        </div>
+        <div class="case ng">
+          <span class="mark">下がらない</span>
+          <p>Sonos / Google Home<br /><small>スピーカー自身が鳴らしているため</small></p>
+        </div>
+      </div>
+      <p>
+        Sonos や Google Home は、Mac ではなくスピーカー自身が音楽を再生しています。
+        Mac はその音を握っていないので、止めようがありません。
+        <strong>そこだけを埋めるのが Kikazaru です。</strong>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -61,48 +57,36 @@
 
   h2 {
     font-size: clamp(21px, 4.4vw, 30px);
-    margin-bottom: 28px;
+    margin-bottom: 16px;
   }
 
-  .demo {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 12px;
-    padding: 22px;
-    display: grid;
-    gap: 18px;
+  .want {
+    color: rgba(239, 233, 226, 0.7);
+    font-size: 15px;
+    max-width: 40em;
+    margin-bottom: 30px;
   }
 
-  .tag {
-    display: block;
-    font-size: 12px;
-    color: rgba(239, 233, 226, 0.42);
-    margin-bottom: 4px;
+  .cause {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .said { color: rgba(239, 233, 226, 0.72); }
-
-  .got { font-weight: 600; }
-
-  .gap { display: inline-block; width: 0.5em; }
-
-  mark {
-    background: rgba(255, 183, 94, 0.16);
-    color: #ffbc6b;
-    padding: 1px 4px;
-    border-radius: 4px;
+  .cause h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
   }
 
-  .why {
-    margin-top: 26px;
+  .cause p {
     color: rgba(239, 233, 226, 0.7);
     font-size: 15px;
   }
 
-  .why strong { color: #efe9e2; }
+  .cause strong { color: #efe9e2; }
 
   .split {
-    margin-top: 26px;
+    margin: 20px 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;

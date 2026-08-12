@@ -1,0 +1,190 @@
+---
+// 何が変わるのかを一枚で見せる。
+// 文章で「回り込みが」と説明しても伝わらないので、前後を並べる。
+---
+
+<div class="ba">
+  <div class="panel before">
+    <span class="badge">いままで</span>
+
+    <div class="scene">
+      <div class="who">
+        <span class="ico">🔊</span>
+        <span class="wave big">))) </span>
+        <span class="lbl">音楽が大きいまま</span>
+      </div>
+      <div class="who">
+        <span class="ico">🗣</span>
+        <span class="lbl">喋る</span>
+      </div>
+    </div>
+
+    <div class="out bad">
+      <span class="out-label">文字起こし</span>
+      <p>議事録から箇条書きにして<mark>君と歩いた あの日の</mark></p>
+    </div>
+
+    <ul class="conseq">
+      <li>音楽をいちいち止める</li>
+      <li>ヘッドホンに付け替える</li>
+      <li>会議相手にも音楽が流れる</li>
+    </ul>
+  </div>
+
+  <div class="arrow" aria-hidden="true">→</div>
+
+  <div class="panel after">
+    <span class="badge on">Kikazaru を入れると</span>
+
+    <div class="scene">
+      <div class="who">
+        <span class="ico">🔊</span>
+        <span class="wave small">) </span>
+        <span class="lbl">喋る間だけ自動で下がる</span>
+      </div>
+      <div class="who">
+        <span class="ico">🗣</span>
+        <span class="lbl">喋る</span>
+      </div>
+    </div>
+
+    <div class="out good">
+      <span class="out-label">文字起こし</span>
+      <p>議事録から箇条書きにして</p>
+    </div>
+
+    <ul class="conseq ok">
+      <li>音楽は流したままでいい</li>
+      <li>ヘッドホンは要らない</li>
+      <li>話し終われば元の音量に戻る</li>
+    </ul>
+  </div>
+</div>
+
+<style>
+  .ba {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .panel {
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .after {
+    border-color: rgba(111, 211, 148, 0.32);
+    background: rgba(111, 211, 148, 0.06);
+  }
+
+  .badge {
+    align-self: flex-start;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(239, 233, 226, 0.72);
+    margin-bottom: 14px;
+  }
+
+  .badge.on {
+    background: rgba(111, 211, 148, 0.18);
+    color: #7fdaa1;
+  }
+
+  .scene {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .who {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .ico { font-size: 20px; }
+
+  .wave {
+    font-family: ui-monospace, Menlo, monospace;
+    letter-spacing: -2px;
+  }
+
+  .wave.big { color: #ff9d6b; font-size: 17px; }
+  .wave.small { color: #7fdaa1; font-size: 12px; }
+
+  .lbl { font-size: 13px; color: rgba(239, 233, 226, 0.62); }
+
+  .out {
+    border-radius: 9px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.22);
+    margin-bottom: 14px;
+  }
+
+  .out-label {
+    display: block;
+    font-size: 11px;
+    color: rgba(239, 233, 226, 0.38);
+    margin-bottom: 3px;
+  }
+
+  .out p { font-size: 14px; line-height: 1.6; }
+  .out.good p { color: #b7e9c8; }
+
+  mark {
+    background: rgba(255, 183, 94, 0.18);
+    color: #ffbc6b;
+    padding: 1px 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
+
+  .conseq {
+    list-style: none;
+    padding: 0;
+    margin: auto 0 0;
+    display: grid;
+    gap: 5px;
+  }
+
+  .conseq li {
+    font-size: 13px;
+    color: rgba(239, 233, 226, 0.6);
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .conseq li::before {
+    content: '×';
+    position: absolute;
+    left: 2px;
+    color: #ff9d6b;
+    font-weight: 700;
+  }
+
+  .conseq.ok li::before {
+    content: '✓';
+    color: #7fdaa1;
+  }
+
+  .arrow {
+    align-self: center;
+    color: rgba(239, 233, 226, 0.3);
+    font-size: 22px;
+  }
+
+  @media (max-width: 720px) {
+    .ba { grid-template-columns: 1fr; }
+    .arrow { transform: rotate(90deg); justify-self: center; }
+  }
+</style>

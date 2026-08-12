@@ -9,6 +9,7 @@ const { downloadHref, size } = Astro.props
 <header class="hero">
   <div class="wrap">
     <div class="mark">🙉</div>
+    <p class="name">Kikazaru</p>
     <h1>マイクがオンの間だけ、<br />部屋のBGMを下げる</h1>
     <p class="sub">
       音声入力やオンライン会議のあいだ、Sonos や Google Home を自動で静かにします。
@@ -40,9 +41,18 @@ const { downloadHref, size } = Astro.props
     margin-bottom: 20px;
   }
 
+  .name {
+    font-size: clamp(38px, 9vw, 68px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+  }
+
   h1 {
-    font-size: clamp(28px, 6.4vw, 48px);
-    letter-spacing: -0.01em;
+    font-size: clamp(20px, 3.6vw, 27px);
+    color: var(--ink-soft);
+    font-weight: 700;
     margin-bottom: 20px;
   }
 
