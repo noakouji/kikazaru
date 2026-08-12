@@ -223,7 +223,7 @@ export const ja: Copy = {
     bugBtn: '要望・バグ報告を送る',
     kofiTitle: '役に立ったら',
     kofiBody:
-      'Kikazaru はこれからも無料のままにします。もし毎日の作業が少し楽になったら、コーヒー1杯ぶんだけ気持ちをいただけると嬉しいです。',
+      'Kikazaru はこれからも無料のままにします。もし毎日の作業が少し楽になったら、下から気持ちをいただけると嬉しいです。金額は 500円 から選べます。',
     kofiBtn: 'コーヒーをおごる',
     kofiFallback: 'うまく表示されないときは Ko-fi のページで',
   },
@@ -373,7 +373,7 @@ export const en: Copy = {
     bugBtn: 'Send feedback',
     kofiTitle: 'If it earned its place',
     kofiBody:
-      'Kikazaru stays free. If it makes your day a little smoother, a coffee is always welcome.',
+      'Kikazaru stays free. If it makes your day a little smoother, anything from ¥500 is very welcome.',
     kofiBtn: 'Buy me a coffee',
     kofiFallback: 'Not loading? Open the Ko-fi page instead',
   },
