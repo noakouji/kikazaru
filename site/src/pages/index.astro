@@ -9,7 +9,7 @@ import Support from '../components/Support.astro'
 const links = {
   download: '/Kikazaru.zip',
   form: 'https://docs.google.com/forms/d/e/1FAIpQLSefXhorrRPZcoxn_hRgREMqL48qcicouq6lu3wExYi97xUYjQ/viewform',
-  kofi: '', // Ko-fi のページができたらここに入れる
+  kofi: 'https://ko-fi.com/kojiokada',
 }
 const downloadSize = '約 400 KB'
 
@@ -39,6 +39,32 @@ const speakers = [
   </nav>
 
   <Hero downloadHref={links.download} size={downloadSize} />
+
+  <section class="shot-band">
+    <div class="wrap shot-inner">
+      <img
+        class="shot"
+        src="/app-settings.png"
+        width="900"
+        height="1080"
+        alt="Kikazaru の設定画面。見つかったスピーカーが並び、下げたいものにチェックを入れる"
+        loading="lazy"
+      />
+      <div class="shot-note">
+        <h2>設定はこれだけ</h2>
+        <p>
+          同じネットワークにあるスピーカーが自動で並びます。
+          <strong>下げたいものにチェックを入れれば終わり</strong>で、
+          IPアドレスの入力なども要りません。
+        </p>
+        <p class="fine">
+          Sonos 以外は、うっかりテレビを下げてしまわないよう初期状態ではオフです。
+          アプリごとに「下げる／ミュートする」を選ぶこともできます。
+        </p>
+      </div>
+    </div>
+  </section>
+
   <Problem />
 
   <section class="section">
@@ -117,6 +143,40 @@ const speakers = [
 </Base>
 
 <style>
+  .shot-band {
+    background: var(--paper-deep);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 56px 0;
+  }
+
+  .shot-inner {
+    display: grid;
+    grid-template-columns: 330px 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .shot {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    /* 画面を切り出したものなので、浮かせて実物らしく見せる */
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+  }
+
+  .shot-note h2 { font-size: clamp(20px, 3.6vw, 26px); margin-bottom: 14px; }
+  .shot-note p { font-size: 15px; color: var(--ink-soft); }
+  .shot-note p + p { margin-top: 12px; }
+  .shot-note strong { color: var(--ink); }
+  .fine { font-size: 13.5px; }
+
+  @media (max-width: 720px) {
+    .shot-inner { grid-template-columns: 1fr; gap: 24px; }
+    .shot { max-width: 320px; }
+  }
+
   .topbar {
     position: sticky;
     top: 0;

@@ -87,7 +87,7 @@ const { formHref } = Astro.props
         <strong>下げたいものにチェックを入れるだけ</strong>で準備は終わりです。
         IPアドレスの入力などは要りません。
       </p>
-      <figure class="wide"><Figures kind="settings" /></figure>
+      <figure class="wide"><img src="/app-settings.png" width="900" height="1080" alt="Kikazaru の設定画面" loading="lazy" /></figure>
       <p class="small">
         Sonos 以外は、うっかりテレビを下げてしまわないよう初期状態ではオフです。
         使いたいものだけチェックを入れてください。
@@ -173,7 +173,15 @@ const { formHref } = Astro.props
     max-width: 460px;
   }
 
-  figure.wide { max-width: 100%; margin-top: 16px; }
+  figure.wide { max-width: 380px; margin-top: 16px; }
+
+  figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
 
   code {
     background: var(--paper-deep);

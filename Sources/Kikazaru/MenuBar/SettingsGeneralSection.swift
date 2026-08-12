@@ -40,9 +40,16 @@ extension SettingsView {
                 "Let me know if something does not work, or if you want another device supported. Mentioning your hardware and macOS version helps a lot."))
                 .font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            Button(L10n.t("要望・バグ報告を送る", "Send feedback")) {
-                if let url = URL(string: Links.feedbackForm) {
-                    NSWorkspace.shared.open(url)
+            HStack(spacing: 10) {
+                Button(L10n.t("要望・バグ報告を送る", "Send feedback")) {
+                    if let url = URL(string: Links.feedbackForm) {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                Button(L10n.t("コーヒーをおごる ☕️", "Buy me a coffee ☕️")) {
+                    if let url = URL(string: Links.kofi) {
+                        NSWorkspace.shared.open(url)
+                    }
                 }
             }
         }
@@ -61,4 +68,6 @@ enum Links {
         "https://docs.google.com/forms/d/e/1FAIpQLSefXhorrRPZcoxn_hRgREMqL48qcicouq6lu3wExYi97xUYjQ/viewform"
     /// 配布サイト
     static let website = "https://kikazaru.koji-okada.workers.dev"
+    /// 支援
+    static let kofi = "https://ko-fi.com/kojiokada"
 }

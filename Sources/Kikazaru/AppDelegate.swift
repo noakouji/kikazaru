@@ -45,6 +45,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             await model.refreshWithRetry()
             await coordinator.start()
             statusItem?.rebuildMenu()
+            // 資料用にウインドウを開いた状態で立ち上げるためのモード
+            if CommandLine.arguments.contains("--show-settings") {
+                statusItem?.showSettingsForCapture()
+            }
         }
     }
 

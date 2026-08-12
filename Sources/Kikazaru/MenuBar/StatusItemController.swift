@@ -131,6 +131,11 @@ final class StatusItemController {
         openSettings()
     }
 
+    /// 資料用に設定ウインドウを開く。通常の操作からは呼ばれない。
+    func showSettingsForCapture() {
+        openSettings()
+    }
+
     @objc private func quit() {
         Task { @MainActor in
             await coordinator.shutdown()
