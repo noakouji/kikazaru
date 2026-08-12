@@ -6,3 +6,6 @@ __pycache__/
 .build/
 *.dSYM/
 build/
+site/dist/
+site/.astro/
+site/node_modules/

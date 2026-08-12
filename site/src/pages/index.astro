@@ -1,0 +1,174 @@
+---
+import Base from '../layouts/Base.astro'
+import Hero from '../components/Hero.astro'
+import Problem from '../components/Problem.astro'
+import Install from '../components/Install.astro'
+
+// 差し替えが1か所で済むように、外部リンクはここにまとめる。
+const links = {
+  download: '/Kikazaru.zip',
+  form: 'https://docs.google.com/forms/d/e/1FAIpQLSefXhorrRPZcoxn_hRgREMqL48qcicouq6lu3wExYi97xUYjQ/viewform',
+  kofi: '', // Ko-fi のページができたらここに入れる
+}
+const downloadSize = '約 400 KB'
+
+const steps = [
+  { emoji: '🎙', title: '話し始める', body: 'マイクがオンになったことを検知します' },
+  { emoji: '🙉', title: 'BGMが下がる', body: '約0.1秒でスピーカーの音量を下げます' },
+  { emoji: '🐵', title: '話し終わる', body: '元の音量にそのまま戻します' },
+]
+
+const speakers = [
+  { name: 'Sonos', note: '推奨。実機で確認済み', state: 'ok' },
+  { name: 'Google Home / Chromecast', note: '実機で確認済み', state: 'ok' },
+  { name: 'Bose SoundTouch', note: '実機がないため未確認', state: 'wip' },
+  { name: 'Mac から鳴らしているスピーカー', note: '設定で有効にできます', state: 'sub' },
+]
+---
+
+<Base
+  title="Kikazaru — マイクがオンの間だけ、部屋のBGMを下げる Mac アプリ"
+  description="音声入力やオンライン会議のあいだ、Sonos や Google Home の音量を自動で下げます。話し終わると元に戻ります。macOS 用・無料。"
+>
+  <Hero downloadHref={links.download} size={downloadSize} />
+  <Problem />
+
+  <section class="section">
+    <div class="wrap">
+      <p class="section-label">動き</p>
+      <h2>入れておくだけで、あとは勝手に</h2>
+      <div class="steps">
+        {steps.map((s) => (
+          <div class="step">
+            <span class="emoji">{s.emoji}</span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </div>
+        ))}
+      </div>
+      <p class="lead">
+        メニューバーの絵文字が 🐵 と 🙉 で切り替わるので、
+        いま下がっているかどうかが一目で分かります。
+        待機中は何も動かないので、電池もほとんど食いません。
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="section-label">対応スピーカー</p>
+      <h2>ネットワーク上のスピーカーを自動で探します</h2>
+      <ul class="speakers">
+        {speakers.map((s) => (
+          <li class={s.state}>
+            <span class="dot"></span>
+            <strong>{s.name}</strong>
+            <span class="note">{s.note}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="lead">
+        IPアドレスの入力は要りません。Sonos 以外は、うっかりテレビを下げてしまわないよう
+        初期状態ではオフになっています。設定でチェックを入れると有効になります。
+      </p>
+    </div>
+  </section>
+
+  <Install formHref={links.form} />
+
+  <footer class="foot">
+    <div class="wrap">
+      <p class="made">
+        Sonos と Google Home を使っていて自分が困ったので作りました。
+        かなりニッチな道具だという自覚はあります。
+      </p>
+      <div class="foot-links">
+        <a href={links.form} target="_blank" rel="noopener">要望・バグ報告を送る</a>
+        {links.kofi && <a href={links.kofi} target="_blank" rel="noopener">コーヒーをおごる ☕️</a>}
+      </div>
+      <p class="copy">Kikazaru · macOS 14 以降 · 無料</p>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .step {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .emoji { font-size: 28px; display: block; margin-bottom: 8px; }
+  .step h3 { font-size: 16px; margin-bottom: 4px; }
+  .step p { font-size: 14px; color: var(--ink-soft); }
+
+  .speakers {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: grid;
+    gap: 2px;
+  }
+
+  .speakers li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 11px 2px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: none;
+    transform: translateY(-1px);
+  }
+
+  .ok .dot { background: var(--ok); }
+  .wip .dot { background: #d08a3c; }
+  .sub .dot { background: var(--ink-faint); }
+
+  .speakers strong { font-weight: 600; }
+  .note { font-size: 13.5px; color: var(--ink-faint); }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    padding: 46px 0 64px;
+  }
+
+  .made {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 32em;
+  }
+
+  .foot-links {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin: 20px 0 26px;
+  }
+
+  .foot-links a {
+    color: var(--accent);
+    font-size: 15px;
+    text-underline-offset: 3px;
+  }
+
+  .copy { font-size: 13px; color: var(--ink-faint); }
+
+  @media (max-width: 640px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>

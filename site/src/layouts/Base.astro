@@ -1,0 +1,103 @@
+---
+interface Props {
+  title: string
+  description: string
+}
+const { title, description } = Astro.props
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#171419" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --ink: #1b1a1f;
+    --ink-soft: #55525c;
+    --ink-faint: #8b8792;
+    --paper: #f7f5f1;
+    --paper-deep: #efebe4;
+    --line: #ddd7cd;
+    --dark: #171419;
+    --dark-soft: #241f28;
+    --accent: #b4622f;
+    --accent-soft: #f0e2d6;
+    --ok: #3f7d54;
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family:
+      'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    /* 紙のようなざらつきを薄く敷く。均一なベタ塗りを避ける */
+    background-image: radial-gradient(rgba(0, 0, 0, 0.022) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+
+  h1, h2, h3 {
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  p { margin: 0; }
+  a { color: inherit; }
+
+  .wrap {
+    width: min(880px, calc(100% - 40px));
+    margin-inline: auto;
+  }
+
+  .section {
+    padding: 72px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+
+  .section h2 {
+    font-size: clamp(21px, 4vw, 27px);
+    margin-bottom: 22px;
+  }
+
+  .lead {
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  @media (max-width: 640px) {
+    body { font-size: 15px; line-height: 1.8; }
+    .section { padding: 52px 0; }
+  }
+</style>

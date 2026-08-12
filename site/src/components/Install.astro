@@ -1,0 +1,153 @@
+---
+interface Props {
+  formHref: string
+}
+const { formHref } = Astro.props
+
+// このページで一番大事なところ。
+// 署名なしで配っているので、受け取った人は必ず一度ブロックされる。
+// ここでつまずくと、アプリを触ってすらもらえない。
+---
+
+<section class="section" id="install">
+  <div class="wrap">
+    <p class="section-label">はじめの1分</p>
+    <h2>初回だけ、開き方にひと手間かかります</h2>
+
+    <div class="callout">
+      <p>
+        Kikazaru は Apple に開発元の登録をしていない個人アプリなので、
+        そのままダブルクリックすると <strong>「開発元を検証できないため開けません」</strong>
+        と出て止まります。壊れているわけではありません。
+      </p>
+      <p class="small">
+        Apple への登録は年間 99 ドルかかります。まずは無料で配りたかったので、
+        この方法を選びました。ここだけ、お手数をおかけします。
+      </p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <h3>ダウンロードした <code>Kikazaru.zip</code> をダブルクリックして展開する</h3>
+        <p>同じ場所に <code>Kikazaru.app</code> が出てきます。</p>
+      </li>
+      <li>
+        <h3><code>Kikazaru.app</code> を「アプリケーション」フォルダへ移動する</h3>
+        <p>必須ではありませんが、入れておくと迷子になりません。</p>
+      </li>
+      <li>
+        <h3>アイコンを <strong>右クリック</strong>（または control キーを押しながらクリック）して「開く」を選ぶ</h3>
+        <p>
+          ダブルクリックではなく、必ず右クリックから開いてください。
+          ここが唯一のコツです。
+        </p>
+      </li>
+      <li>
+        <h3>確認のダイアログで、もう一度「開く」を押す</h3>
+        <p>
+          これで許可されます。<strong>2回目からは普通にダブルクリックで開けます。</strong>
+        </p>
+      </li>
+      <li>
+        <h3>メニューバーに 🐵 が出たら完了</h3>
+        <p>
+          クリックすると設定が開きます。同じネットワークのスピーカーを自動で探すので、
+          下げたいものにチェックを入れてください。
+        </p>
+      </li>
+    </ol>
+
+    <div class="trouble">
+      <h3>それでも開けないときは</h3>
+      <p>
+        システム設定 → プライバシーとセキュリティ を開くと、下のほうに
+        「Kikazaru は開発元を確認できないため、使用がブロックされました」という行と
+        <strong>「このまま開く」</strong> ボタンが出ています。そこから開けます。
+      </p>
+      <p class="small">
+        どうしても駄目なら <a href={formHref} target="_blank" rel="noopener">こちらから状況を教えてください</a>。
+        お使いの Mac と macOS のバージョンを書いていただけると助かります。
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .callout {
+    background: var(--accent-soft);
+    border: 1px solid #e3cdb8;
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: grid;
+    gap: 12px;
+    margin-bottom: 34px;
+  }
+
+  .callout p { font-size: 15px; }
+
+  .small {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 26px;
+  }
+
+  .steps li {
+    counter-increment: step;
+    padding-left: 46px;
+    position: relative;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--dark);
+    color: var(--paper);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .steps h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .steps p {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+
+  code {
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 0.92em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .trouble {
+    margin-top: 38px;
+    padding-top: 26px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .trouble h3 { font-size: 16px; margin-bottom: 10px; }
+  .trouble p { font-size: 14.5px; color: var(--ink-soft); }
+  .trouble p + p { margin-top: 10px; }
+  .trouble a { color: var(--accent); }
+</style>

@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kikazaru",
+  "compatibility_date": "2026-08-01",
+  // 静的サイトなので Worker スクリプトは持たず、アセット配信だけ行う
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

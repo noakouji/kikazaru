@@ -60,5 +60,5 @@ enum Links {
     static let feedbackForm =
         "https://docs.google.com/forms/d/e/1FAIpQLSefXhorrRPZcoxn_hRgREMqL48qcicouq6lu3wExYi97xUYjQ/viewform"
     /// 配布サイト
-    static let website = "https://kikazaru.noplan-inc.com"
+    static let website = "https://kikazaru.koji-okada.workers.dev"
 }
