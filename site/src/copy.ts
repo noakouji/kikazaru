@@ -49,12 +49,13 @@ export interface Copy {
     items: { emoji: string; title: string; body: string }[]
     tail: string
     demo: {
-      idle: string
-      ducking: string
       micOff: string
       micOn: string
-      meter: string
-      origin: string
+      speaker: string
+      loud: string
+      quiet: string
+      transcript: string
+      line: string
     }
   }
   speakers: {
@@ -172,12 +173,13 @@ export const ja: Copy = {
     ],
     tail: 'メニューバーの絵文字が 🐵 と 🙉 で切り替わるので、いま下がっているかどうかが一目で分かります。待機中は何も動かないので、電池もほとんど食いません。',
     demo: {
-      idle: '待機中',
-      ducking: '下げています',
-      micOff: 'マイク OFF',
-      micOn: 'マイク ON',
-      meter: '部屋のBGMの音量',
-      origin: 'もとの音量 20',
+      micOff: 'まだ喋っていない',
+      micOn: '喋りはじめた',
+      speaker: '部屋のスピーカー',
+      loud: '鳴っている',
+      quiet: '小さくなった',
+      transcript: '音声入力の結果',
+      line: '議事録から箇条書きにして',
     },
   },
   speakers: {
@@ -368,12 +370,13 @@ export const en: Copy = {
     ],
     tail: 'The menu bar shows 🐵 or 🙉, so you can see at a glance whether the room is currently turned down. Nothing runs while it waits, so it barely touches your battery.',
     demo: {
-      idle: 'Waiting',
-      ducking: 'Turned down',
-      micOff: 'Mic off',
-      micOn: 'Mic on',
-      meter: 'Room volume',
-      origin: 'was 20',
+      micOff: 'Not talking yet',
+      micOn: 'Started talking',
+      speaker: 'Room speaker',
+      loud: 'Playing',
+      quiet: 'Turned down',
+      transcript: 'What the mic hears',
+      line: 'Pull the action items from the notes',
     },
   },
   speakers: {

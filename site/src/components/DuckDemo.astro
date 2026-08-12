@@ -7,38 +7,37 @@ interface Props {
 const { t } = Astro.props
 const d = t.steps.demo
 
-// 「マイクがオンの間だけ下がる」は、文章で読むより一度動いているのを見るほうが速い。
-// 8秒で一巡する。待つ → 下がる → 保つ → 戻る、をそのまま繰り返す。
-// JavaScript は使わない。止まっていても壊れず、タブが裏でも電池を食わない。
+// 数字のバーはやめた。「20 が 6 になる」と言われても、それが大きいのか小さいのか分からない。
+// 音の棒が減る／文字起こしがきれいに出る、という結果だけを見せる。
+// 8秒で一巡。JavaScript は使わない。
 ---
 
-<div class="demo" role="img" aria-label={`${d.micOn} → ${d.ducking}`}>
-  <div class="row top">
-    <span class="chip">
-      <span class="glyph idle">🐵</span>
-      <span class="glyph duck">🙉</span>
-      <span class="label idle">{d.idle}</span>
-      <span class="label duck">{d.ducking}</span>
-    </span>
-
-    <span class="mic">
-      <span class="mic-glyph">🎙</span>
-      <span class="mic-label off">{d.micOff}</span>
-      <span class="mic-label on">{d.micOn}</span>
-      <span class="waves" aria-hidden="true"><i></i><i></i><i></i></span>
+<div class="demo" role="img" aria-label={`${d.micOn} → ${d.quiet}`}>
+  <div class="stage">
+    <span class="who">🔊</span>
+    <span class="col">
+      <span class="bars" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i>
+      </span>
+      <span class="cap">
+        <span class="s-loud">{d.speaker} · {d.loud}</span>
+        <span class="s-quiet">{d.speaker} · {d.quiet}</span>
+      </span>
     </span>
   </div>
 
-  <p class="meter-label">{d.meter}</p>
-
-  <div class="meter">
-    {/* もとの高さを残しておかないと、下がったことが分からない */}
-    <span class="ghost" aria-hidden="true"></span>
-    <span class="mark" aria-hidden="true"></span>
-    <span class="fill"></span>
+  <div class="stage mic-row">
+    <span class="who">🎙</span>
+    <span class="cap">
+      <span class="s-loud">{d.micOff}</span>
+      <span class="s-quiet on">{d.micOn}</span>
+    </span>
   </div>
 
-  <p class="origin" aria-hidden="true">{d.origin}</p>
+  <div class="out">
+    <span class="out-label">{d.transcript}</span>
+    <p class="line"><span>{d.line}</span></p>
+  </div>
 </div>
 
 <style>
@@ -46,175 +45,133 @@ const d = t.steps.demo
     background: #fff;
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 26px 28px 30px;
+    padding: 26px 28px 28px;
     margin-bottom: 24px;
   }
 
-  .row {
+  .stage {
     display: flex;
     align-items: center;
-    gap: 22px;
-    flex-wrap: wrap;
-    margin-bottom: 26px;
+    gap: 16px;
+    margin-bottom: 18px;
   }
 
-  /* 状態の札。中身を2つ重ねて、切り替わりを不透明度で見せる */
-  .chip {
-    position: relative;
-    display: inline-grid;
-    grid-template-columns: auto auto;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
-    border-radius: 999px;
-    background: var(--paper-deep);
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--ink-faint);
-    animation: chipTint 8s infinite;
+  .mic-row { margin-bottom: 22px; }
+
+  .who {
+    font-size: 30px;
+    line-height: 1;
+    flex: none;
+    width: 38px;
   }
 
-  .glyph { font-size: 17px; grid-area: 1 / 1; }
-  .label { grid-area: 1 / 2; white-space: nowrap; }
+  .col { display: grid; gap: 7px; }
 
-  .glyph.duck, .label.duck { opacity: 0; }
-  .glyph.idle, .label.idle { opacity: 1; }
+  /* 音の大きさ。棒が減るところを見せる。数字より速く伝わる */
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 34px;
+  }
 
-  .glyph.idle, .label.idle { animation: hideWhenDucking 8s infinite; }
-  .glyph.duck, .label.duck { animation: showWhenDucking 8s infinite; }
+  .bars i {
+    width: 7px;
+    border-radius: 3px;
+    background: var(--ink);
+    transform-origin: bottom;
+    animation: quieten 8s infinite;
+  }
 
-  .mic {
-    position: relative;
+  .bars i:nth-child(1) { height: 12px; }
+  .bars i:nth-child(2) { height: 20px; animation-name: dropOut; animation-delay: 0.02s; }
+  .bars i:nth-child(3) { height: 28px; animation-name: dropOut; animation-delay: 0.05s; }
+  .bars i:nth-child(4) { height: 34px; animation-name: dropOut; animation-delay: 0.08s; }
+  .bars i:nth-child(5) { height: 22px; animation-name: dropOut; animation-delay: 0.11s; }
+
+  /* 状態の言葉。2つ重ねて入れ替える */
+  .cap {
     display: inline-grid;
-    grid-template-columns: auto auto auto;
-    align-items: center;
-    gap: 8px;
     font-size: 14px;
     font-weight: 600;
+    color: var(--ink-soft);
   }
 
-  .mic-glyph { font-size: 18px; }
-  .mic-label { grid-area: 1 / 2; white-space: nowrap; }
-  .mic-label.off { color: var(--ink-faint); animation: hideWhenDucking 8s infinite; }
-  .mic-label.on { color: var(--accent); opacity: 0; animation: showWhenDucking 8s infinite; }
+  .cap > span { grid-area: 1 / 1; white-space: nowrap; }
+  .s-loud { animation: hideWhenQuiet 8s infinite; }
+  .s-quiet { opacity: 0; animation: showWhenQuiet 8s infinite; }
+  .s-quiet.on { color: var(--accent); }
 
-  .waves {
-    grid-area: 1 / 3;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    margin-left: 4px;
+  /* 結果。ここが本題なので、いちばん下に大きく置く */
+  .out {
+    background: var(--paper-deep);
+    border-radius: 11px;
+    padding: 15px 18px 17px;
   }
 
-  .waves i {
-    width: 3px;
-    border-radius: 2px;
-    background: var(--accent);
-    opacity: 0;
-    animation: wave 8s infinite;
-  }
-
-  .waves i:nth-child(1) { height: 9px; animation-delay: 0s; }
-  .waves i:nth-child(2) { height: 15px; animation-delay: 0.12s; }
-  .waves i:nth-child(3) { height: 11px; animation-delay: 0.24s; }
-
-  .meter-label { font-size: 13px; color: var(--ink-soft); margin-bottom: 9px; }
-
-  .meter {
-    position: relative;
-    height: 16px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.07);
-    margin-bottom: 8px;
-  }
-
-  .fill {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 20%;
-    border-radius: 999px;
-    background: var(--ink);
-    animation: duck 8s infinite;
-  }
-
-  .ghost {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 20%;
-    border: 1.5px solid var(--ink-faint);
-    border-radius: 999px;
-    opacity: 0;
-    animation: showWhenDucking 8s infinite;
-  }
-
-  .mark {
-    position: absolute;
-    left: 20%;
-    top: -6px;
-    bottom: -6px;
-    width: 0;
-    border-left: 1.5px dashed var(--ink-faint);
-    opacity: 0;
-    animation: showWhenDucking 8s infinite;
-  }
-
-  .origin {
-    /* ブロックのままだと translateX(-50%) が「自分の幅＝親の幅」の半分になり、
-       枠の外まで飛び出す。中身の幅に縮めてから中央へ寄せる。 */
-    display: inline-block;
+  .out-label {
+    display: block;
     font-size: 11.5px;
     color: var(--ink-faint);
-    margin-left: 20%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    opacity: 0;
-    animation: showWhenDucking 8s infinite;
+    margin-bottom: 5px;
   }
 
-  /* 1.5秒で下がり、5.5秒で戻る。急がず、待たせすぎない間合い */
-  @keyframes duck {
-    0%, 18.75% { width: 20%; background: var(--ink); }
-    25%, 68.75% { width: 6%; background: var(--accent); }
-    75%, 100% { width: 20%; background: var(--ink); }
+  .line {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    min-height: 1.5em;
   }
 
-  @keyframes showWhenDucking {
-    0%, 17.5% { opacity: 0; }
-    21%, 70% { opacity: 1; }
-    73.5%, 100% { opacity: 0; }
+  /* 文字が左から現れる。等幅でなくても崩れないよう clip-path で削る */
+  .line span {
+    display: inline-block;
+    clip-path: inset(0 100% 0 0);
+    animation: typing 8s infinite;
   }
 
-  @keyframes hideWhenDucking {
-    0%, 17.5% { opacity: 1; }
-    21%, 70% { opacity: 0; }
-    73.5%, 100% { opacity: 1; }
+  @keyframes quieten {
+    0%, 18% { height: 12px; opacity: 1; background: var(--ink); }
+    24%, 70% { height: 8px; opacity: 1; background: var(--accent); }
+    76%, 100% { height: 12px; opacity: 1; background: var(--ink); }
   }
 
-  @keyframes chipTint {
-    0%, 17.5% { background: var(--paper-deep); }
-    21%, 70% { background: var(--accent-soft); }
-    73.5%, 100% { background: var(--paper-deep); }
+  @keyframes dropOut {
+    0%, 18% { transform: scaleY(1); opacity: 1; background: var(--ink); }
+    24%, 70% { transform: scaleY(0.1); opacity: 0.25; background: var(--accent); }
+    76%, 100% { transform: scaleY(1); opacity: 1; background: var(--ink); }
   }
 
-  @keyframes wave {
-    0%, 18% { opacity: 0; transform: scaleY(0.4); }
-    22% { opacity: 1; transform: scaleY(1); }
-    30% { transform: scaleY(0.55); }
-    38% { transform: scaleY(1); }
-    46% { transform: scaleY(0.6); }
-    54% { transform: scaleY(1); }
-    62% { transform: scaleY(0.5); }
-    69% { opacity: 1; transform: scaleY(0.8); }
-    73%, 100% { opacity: 0; transform: scaleY(0.4); }
+  @keyframes showWhenQuiet {
+    0%, 17% { opacity: 0; }
+    22%, 70% { opacity: 1; }
+    75%, 100% { opacity: 0; }
+  }
+
+  @keyframes hideWhenQuiet {
+    0%, 17% { opacity: 1; }
+    22%, 70% { opacity: 0; }
+    75%, 100% { opacity: 1; }
+  }
+
+  @keyframes typing {
+    0%, 26% { clip-path: inset(0 100% 0 0); }
+    52%, 70% { clip-path: inset(0 0 0 0); }
+    75%, 100% { clip-path: inset(0 100% 0 0); }
   }
 
   /* 動きが苦手な人には、下がりきった状態を静止で見せる */
   @media (prefers-reduced-motion: reduce) {
     .demo * { animation: none !important; }
-    .fill { width: 6%; background: var(--accent); }
-    .ghost, .mark, .origin { opacity: 1; }
-    .glyph.idle, .label.idle, .mic-label.off { opacity: 0; }
-    .glyph.duck, .label.duck, .mic-label.on { opacity: 1; }
-    .chip { background: var(--accent-soft); }
+    .bars i { background: var(--accent); }
+    .bars i:nth-child(1) { height: 8px; }
+    .bars i:nth-child(n + 2) { transform: scaleY(0.1); opacity: 0.25; }
+    .s-loud { opacity: 0; }
+    .s-quiet { opacity: 1; }
+    .line span { clip-path: inset(0 0 0 0); }
+  }
+
+  @media (max-width: 560px) {
+    .line { font-size: 16px; }
   }
 </style>
