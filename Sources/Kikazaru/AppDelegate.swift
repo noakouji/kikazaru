@@ -46,9 +46,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.coordinator = coordinator
         statusItem = StatusItemController(coordinator: coordinator, model: model, settings: settings)
 
-        // スピーカー探索より前に、マイクのゲインだけ先に守り始める
-        coordinator.startGainLock()
-
         coordinator.onAppsSeen = { [weak model] apps in
             Task { @MainActor in model?.noteSeen(apps) }
         }

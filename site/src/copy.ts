@@ -278,7 +278,7 @@ export const ja: Copy = {
       },
     ],
     payHeading: 'コーヒーをおごる',
-    payNote: '300円から選べます。カードか PayPal で、アカウント登録は要りません。',
+    payNote: '300円から。金額は好きに書き換えられます。カードか PayPal で、アカウント登録は要りません。',
     otherHeading: 'お金以外で助かること',
     otherBody: 'お金より、こっちのほうが助かります。',
     otherList: [
@@ -467,7 +467,7 @@ export const en: Copy = {
       },
     ],
     payHeading: 'Buy me a coffee',
-    payNote: 'From ¥300. Card or PayPal, no account needed.',
+    payNote: 'Starts at ¥300 — change it to whatever you like. Card or PayPal, no account needed.',
     otherHeading: 'Things that help more than money',
     otherBody: 'Genuinely, these are worth more.',
     otherList: [
