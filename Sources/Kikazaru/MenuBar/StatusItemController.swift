@@ -79,7 +79,13 @@ final class StatusItemController {
             return L10n.t("😴 いまは何もしません", "😴 Doing nothing right now")
         }
         if coordinator.state == .ducked {
-            return L10n.t("🙉 BGMを下げています", "🙉 The music is turned down")
+            let what = coordinator.isMuting
+                ? L10n.t("BGMをミュート中", "Music muted")
+                : L10n.t("BGMを下げています", "Music turned down")
+            if let app = coordinator.activeApp {
+                return "🙉 \(what)（\(app)）"
+            }
+            return "🙉 \(what)"
         }
         let count = model.enabledCount
         return count > 0

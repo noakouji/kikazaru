@@ -83,7 +83,10 @@ final class SpeakersAction: DuckAction, @unchecked Sendable {
             for speaker in targets {
                 group.addTask { [floor, fadeSteps] in
                     guard let original = try? await speaker.volume() else { return nil }
-                    let target = max(floor, min(original, Int((Double(original) * ratio).rounded())))
+                    // ratio が 0 のときは完全に黙らせる。下限は適用しない。
+                    let target = ratio <= 0
+                        ? 0
+                        : max(floor, min(original, Int((Double(original) * ratio).rounded())))
                     guard target < original else { return nil }
                     await speaker.fade(from: original, to: target, steps: fadeSteps)
                     return (speaker.id, original)

@@ -20,6 +20,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         speakers.restoreSelection(disabled: settings.disabledSpeakerIDs,
                                   known: settings.knownSpeakerIDs)
         let model = AppModel(action: speakers)
+        model.setSeenApps(settings.seenApps)
+        model.onAppsChanged = { apps in
+            var updated = Settings.load()
+            updated.seenApps = apps
+            updated.save()
+        }
         model.onSelectionChange = { disabled, known in
             var updated = Settings.load()
             updated.disabledSpeakerIDs = disabled
@@ -30,6 +36,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.model = model
         self.coordinator = coordinator
         statusItem = StatusItemController(coordinator: coordinator, model: model, settings: settings)
+
+        coordinator.onAppsSeen = { [weak model] apps in
+            Task { @MainActor in model?.noteSeen(apps) }
+        }
 
         Task {
             await model.refreshWithRetry()

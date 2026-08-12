@@ -16,6 +16,14 @@ final class Coordinator {
     private(set) var state: State = .idle
     private(set) var isEnabled = true
 
+    /// いま音量を変える原因になっているアプリ（表示用）
+    private(set) var activeApp: String?
+    /// いまミュートしているか（表示用）
+    private(set) var isMuting = false
+
+    /// マイクを使ったアプリを見つけたときに呼ばれる
+    var onAppsSeen: (([String]) -> Void)?
+
     var onStateChange: ((State) -> Void)?
 
     /// メニュー表示のために外から参照する用
@@ -76,6 +84,15 @@ final class Coordinator {
         releaseTask?.cancel()
         releaseTask = nil
         guard isEnabled, state == .idle else { return }
+
+        // 誰がマイクを使っているかで下げ方を変える。
+        // 音声入力なら少し下げるだけ、会議なら完全に黙らせる。
+        let users = MicUsers.active()
+        if !users.isEmpty { onAppsSeen?(users) }
+        let modes = users.map { settings.mode(for: $0) }
+        isMuting = modes.contains(.mute)
+        activeApp = users.first.map { AppPresets.name(for: $0) }
+
         state = .ducked
         onStateChange?(state)
         Task { await duckNow() }
@@ -107,7 +124,7 @@ final class Coordinator {
     // MARK: - アクション実行
 
     private func duckNow() async {
-        let ratio = settings.duckRatio
+        let ratio = isMuting ? 0 : settings.duckRatio
         await withTaskGroup(of: Void.self) { group in
             for action in actions {
                 group.addTask { await action.duck(ratio: ratio) }
@@ -125,6 +142,8 @@ final class Coordinator {
         StateStore.clear()
         if state != .idle {
             state = .idle
+            isMuting = false
+            activeApp = nil
             onStateChange?(state)
         }
     }

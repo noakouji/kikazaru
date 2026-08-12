@@ -7,9 +7,9 @@ import SwiftUI
 /// 仕組みと現状が分からないと、どの項目をどう動かせばいいか判断できないため。
 struct SettingsView: View {
 
-    @State var settings: Settings
+    @State internal var settings: Settings
     @State private var hotkeyTrusted = HotkeyMonitor.isTrusted
-    var model: AppModel?
+    internal var model: AppModel?
     let onChange: (Settings) -> Void
 
     var body: some View {
@@ -70,6 +70,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 22) {
             header
             speakerSection
+            appSection
             duckingSection
             hotkeySection
             Divider()

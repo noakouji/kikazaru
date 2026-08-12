@@ -27,6 +27,20 @@ struct Settings: Sendable, Equatable {
     /// 一度でも見つけたスピーカー。新顔かどうかの判定に使う。
     var knownSpeakerIDs: Set<String> = []
 
+    /// アプリごとの動き（バンドルID → 下げる／ミュート）
+    var appModes: [String: DuckMode] = AppPresets.defaultModes
+
+    /// 表に無いアプリをどう扱うか
+    var defaultMode: DuckMode = .lower
+
+    /// マイクを使ったのを見たことがあるアプリ。設定画面に並べる。
+    var seenApps: [String] = []
+
+    /// そのアプリに対する動きを返す
+    func mode(for bundleID: String) -> DuckMode {
+        appModes[bundleID] ?? defaultMode
+    }
+
     private enum Key {
         static let ratio = "duckRatio"
         static let delay = "releaseDelay"
@@ -36,6 +50,9 @@ struct Settings: Sendable, Equatable {
         static let language = "language"
         static let disabledSpeakers = "disabledSpeakerIDs"
         static let knownSpeakers = "knownSpeakerIDs"
+        static let appModes = "appModes"
+        static let defaultMode = "defaultMode"
+        static let seenApps = "seenApps"
     }
 
     static func load(from defaults: UserDefaults = .standard) -> Settings {
@@ -57,6 +74,17 @@ struct Settings: Sendable, Equatable {
         }
         s.disabledSpeakerIDs = Set(defaults.stringArray(forKey: Key.disabledSpeakers) ?? [])
         s.knownSpeakerIDs = Set(defaults.stringArray(forKey: Key.knownSpeakers) ?? [])
+        // 保存済みの振り分けを、プリセットの上に重ねる。
+        // 新しくプリセットへ足したアプリも、次の起動から反映される。
+        var modes = AppPresets.defaultModes
+        for (id, raw) in defaults.dictionary(forKey: Key.appModes) as? [String: String] ?? [:] {
+            if let mode = DuckMode(rawValue: raw) { modes[id] = mode }
+        }
+        s.appModes = modes
+        if let raw = defaults.string(forKey: Key.defaultMode), let m = DuckMode(rawValue: raw) {
+            s.defaultMode = m
+        }
+        s.seenApps = defaults.stringArray(forKey: Key.seenApps) ?? []
         L10n.override = s.language
         return s
     }
@@ -70,6 +98,9 @@ struct Settings: Sendable, Equatable {
         defaults.set(language.rawValue, forKey: Key.language)
         defaults.set(Array(disabledSpeakerIDs), forKey: Key.disabledSpeakers)
         defaults.set(Array(knownSpeakerIDs), forKey: Key.knownSpeakers)
+        defaults.set(appModes.mapValues(\.rawValue), forKey: Key.appModes)
+        defaults.set(defaultMode.rawValue, forKey: Key.defaultMode)
+        defaults.set(seenApps, forKey: Key.seenApps)
         L10n.override = language
     }
 }

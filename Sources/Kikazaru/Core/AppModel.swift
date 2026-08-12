@@ -13,6 +13,12 @@ final class AppModel {
     /// 設定画面のどのタブを開くか。別ウインドウを増やさないため状態で持つ。
     var settingsTab: Tab = .settings
 
+    /// マイクを使ったのを見たことがあるアプリ。設定画面に並べる。
+    private(set) var seenApps: [String] = []
+
+    /// 見かけたアプリが増えたときに呼ばれる
+    var onAppsChanged: (([String]) -> Void)?
+
     private(set) var speakers: [SpeakerControl] = []
     private(set) var isSearching = false
 
@@ -51,6 +57,15 @@ final class AppModel {
 
     /// 実際に下げる対象になっている台数
     var enabledCount: Int { speakers.filter { action.isEnabled($0) }.count }
+
+    func setSeenApps(_ apps: [String]) { seenApps = apps }
+
+    func noteSeen(_ bundleIDs: [String]) {
+        let added = bundleIDs.filter { !seenApps.contains($0) }
+        guard !added.isEmpty else { return }
+        seenApps.append(contentsOf: added)
+        onAppsChanged?(seenApps)
+    }
 
     func speakers(of kind: SpeakerKind) -> [SpeakerControl] {
         speakers.filter { $0.kind == kind }
