@@ -266,8 +266,8 @@ export const ja: Copy = {
       },
       {
         icon: 'speaker',
-        title: '対応させたいスピーカーの実機',
-        note: 'Bose SoundTouch はまだ手元になく、コードだけ書いて未確認のままです',
+        title: '対応するスピーカーの実機購入費',
+        note: 'Bose SoundTouch はコードだけ書いて、実機がないまま止まっています。ほかのメーカーも増やしたいので、そのたびに1台要ります',
         cost: '未購入',
       },
       {
@@ -282,7 +282,7 @@ export const ja: Copy = {
     otherHeading: 'お金以外で助かること',
     otherBody: 'お金より、こっちのほうが助かります。',
     otherList: [
-      { icon: 'speaker', title: 'Bose SoundTouch を持っている', body: '実機がなくて未検証のままです。動いた・動かなかったを教えてもらえると、対応表が1行埋まります' },
+      { icon: 'speaker', title: 'Sonos と Google Home 以外を使っている', body: 'Bose SoundTouch はコードだけ書いて未確認です。ほかのメーカーも増やしたいので、何を使っているか教えてもらえると助かります' },
       { icon: 'bug', title: '動かなかった環境を教える', body: 'どの Mac・どの macOS・どのスピーカーで駄目だったか。それだけで直せることが多いです' },
       { icon: 'share', title: '同じことで困っている人に渡す', body: 'かなりニッチな道具なので、届く相手は限られています' },
     ],
@@ -455,8 +455,8 @@ export const en: Copy = {
       },
       {
         icon: 'speaker',
-        title: 'Speakers to test against',
-        note: 'Bose SoundTouch support is written but has never touched real hardware',
+        title: 'Buying speakers to support',
+        note: 'Bose SoundTouch is written but stuck without hardware. I want to add other brands too, and each one means buying a unit',
         cost: 'not bought yet',
       },
       {
@@ -471,7 +471,7 @@ export const en: Copy = {
     otherHeading: 'Things that help more than money',
     otherBody: 'Genuinely, these are worth more.',
     otherList: [
-      { icon: 'speaker', title: 'You own a Bose SoundTouch', body: 'The code exists but has never run against real hardware. Telling me whether it worked fills in a row of the table' },
+      { icon: 'speaker', title: 'You use something other than Sonos or Google Home', body: 'Bose SoundTouch is written but untested. I want to add more brands, so knowing what you own already helps' },
       { icon: 'bug', title: 'Tell me where it broke', body: 'Which Mac, which macOS, which speaker. That is usually enough to fix it' },
       { icon: 'share', title: 'Pass it to someone with the same problem', body: 'It is a niche tool, so it only reaches people through people' },
     ],
