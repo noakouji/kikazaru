@@ -31,6 +31,7 @@ final class Coordinator {
 
     private let actions: [DuckAction]
     private let mic = MicMonitor()
+    private let gainLock = MicGainLock()
     private var hotkey: HotkeyMonitor?
 
     private var releaseTask: Task<Void, Never>?
@@ -57,11 +58,19 @@ final class Coordinator {
         applyHotkeySetting()
     }
 
+    /// ゲイン固定だけは先に始める。
+    /// スピーカー探索の完了を待つと、その数秒間だけ無防備になるため。
+    func startGainLock() {
+        gainLock.start()
+        applyGainLockSetting()
+    }
+
     func shutdown() async {
         releaseTask?.cancel()
         refreshTask?.cancel()
         mic.stop()
         hotkey?.stop()
+        gainLock.stop()
         await restoreNow()
     }
 
@@ -76,6 +85,17 @@ final class Coordinator {
     func update(settings newValue: Settings) {
         settings = newValue
         applyHotkeySetting()
+        applyGainLockSetting()
+    }
+
+    /// マイクのゲイン固定を設定に合わせる。
+    private func applyGainLockSetting() {
+        guard settings.micGainLockEnabled else {
+            gainLock.unlock()
+            return
+        }
+        // 目標値が未設定（負）のときは、いまの値をそのまま基準にする。
+        gainLock.lock(to: settings.micGainTarget >= 0 ? Float(settings.micGainTarget) : nil)
     }
 
     // MARK: - トリガー処理

@@ -46,12 +46,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.coordinator = coordinator
         statusItem = StatusItemController(coordinator: coordinator, model: model, settings: settings)
 
+        // スピーカー探索より前に、マイクのゲインだけ先に守り始める
+        coordinator.startGainLock()
+
         coordinator.onAppsSeen = { [weak model] apps in
             Task { @MainActor in model?.noteSeen(apps) }
         }
 
         Task {
             if isDemo {
+                // 資料用の状態を実設定に書き戻さない。保存の口を閉じてから流し込む
+                model.onSelectionChange = nil
+                model.onAppsChanged = nil
                 let list = DemoSpeaker.sample()
                 model.loadSample(list)
                 for speaker in list where speaker.kind == .googleCast {

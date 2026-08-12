@@ -13,6 +13,11 @@ struct SettingsView: View {
         didSet { loginItemError = LoginItem.setEnabled(launchAtLogin) }
     }
     @State internal var loginItemError: String?
+
+    /// 入力ゲインの現状表示。開いている間だけ更新すれば十分なので状態で持つ。
+    @State internal var currentGain: Float? = MicGainLock.gain(of: MicGainLock.defaultInputDevice())
+    @State internal var gainDeviceName = MicMonitor.deviceName(MicGainLock.defaultInputDevice())
+    @State internal var gainIsSettable = MicGainLock.isSettable(MicGainLock.defaultInputDevice())
     internal var model: AppModel?
     let onChange: (Settings) -> Void
 
@@ -29,6 +34,7 @@ struct SettingsView: View {
         }
         .frame(width: 500, height: 660)
         .background(Color(nsColor: .windowBackgroundColor))
+        .onAppear { refreshGain() }
         .onChange(of: settings) { _, newValue in
             L10n.override = newValue.language
             onChange(newValue)
@@ -78,6 +84,8 @@ struct SettingsView: View {
             duckingSection
             hotkeySection
             Divider()
+            gainSection
+            Divider()
             generalSection
             Divider()
             appearanceSection
@@ -88,7 +96,15 @@ struct SettingsView: View {
 
     /// 実行時に組み立てた文字列でも Markdown（**太字** など）を解釈させる。
     /// Text は文字列リテラルのときしか Markdown を見ないため、明示的に包む。
-    private func md(_ s: String) -> Text { Text(LocalizedStringKey(s)) }
+    internal func md(_ s: String) -> Text { Text(LocalizedStringKey(s)) }
+
+    /// 入力機器の現状を読み直す。設定を開いた直後と、切り替え操作のあとに呼ぶ。
+    internal func refreshGain() {
+        let device = MicGainLock.defaultInputDevice()
+        currentGain = MicGainLock.gain(of: device)
+        gainDeviceName = MicMonitor.deviceName(device)
+        gainIsSettable = MicGainLock.isSettable(device)
+    }
 
     // MARK: - ヘッダーと説明
 

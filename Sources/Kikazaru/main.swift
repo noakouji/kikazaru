@@ -40,6 +40,36 @@ if CommandLine.arguments.contains("--scan") {
     exit(0)
 }
 
+// ゲイン固定が実際に効くかを確かめる。外から書き換えて、戻るかを見る。
+if CommandLine.arguments.contains("--gaintest") {
+    let device = MicGainLock.defaultInputDevice()
+    print("入力機器: \(MicMonitor.deviceName(device))  変更可: \(MicGainLock.isSettable(device))")
+    guard let before = MicGainLock.gain(of: device) else {
+        print("❌ ゲインを読めません"); exit(1)
+    }
+    print("開始時のゲイン: \(Int((before * 100).rounded()))%")
+
+    let lock = MicGainLock()
+    lock.onCorrected = { changed, restored in
+        print("↩︎ \(Int((changed * 100).rounded()))% に変えられたので \(Int((restored * 100).rounded()))% に戻しました")
+    }
+    lock.start()
+    lock.lock()
+
+    // 他のアプリが上げた状況を再現する
+    let intruder = min(before + 0.25, 1.0)
+    print("→ 外部から \(Int((intruder * 100).rounded()))% に変更してみます")
+    MicGainLock.setGain(intruder, on: device)
+    try? await Task.sleep(nanoseconds: 1_500_000_000)
+
+    let after = MicGainLock.gain(of: device) ?? -1
+    let ok = abs(after - before) < 0.02
+    print("\(ok ? "✅" : "❌") 1.5秒後のゲイン: \(Int((after * 100).rounded()))%（期待: \(Int((before * 100).rounded()))%）")
+    lock.stop()
+    MicGainLock.setGain(before, on: device)
+    exit(ok ? 0 : 1)
+}
+
 // 読み書き両方を確かめる。音量は「今の値をそのまま書き戻す」ので聞こえ方は変わらない。
 if CommandLine.arguments.contains("--selftest") {
     for speaker in await SpeakersAction().refresh() {

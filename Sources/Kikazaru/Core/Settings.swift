@@ -36,6 +36,12 @@ struct Settings: Sendable, Equatable {
     /// マイクを使ったのを見たことがあるアプリ。設定画面に並べる。
     var seenApps: [String] = []
 
+    /// マイクの入力ゲインを固定するか。通話アプリに勝手に上げられるのを防ぐ。
+    var micGainLockEnabled: Bool = false
+
+    /// 固定したいゲイン（0.0〜1.0）。負なら「有効にした時点の値」を使う。
+    var micGainTarget: Double = -1
+
     /// そのアプリに対する動きを返す
     func mode(for bundleID: String) -> DuckMode {
         appModes[bundleID] ?? defaultMode
@@ -53,6 +59,8 @@ struct Settings: Sendable, Equatable {
         static let appModes = "appModes"
         static let defaultMode = "defaultMode"
         static let seenApps = "seenApps"
+        static let gainLock = "micGainLockEnabled"
+        static let gainTarget = "micGainTarget"
     }
 
     static func load(from defaults: UserDefaults = .standard) -> Settings {
@@ -85,6 +93,10 @@ struct Settings: Sendable, Equatable {
             s.defaultMode = m
         }
         s.seenApps = defaults.stringArray(forKey: Key.seenApps) ?? []
+        s.micGainLockEnabled = defaults.bool(forKey: Key.gainLock)
+        if defaults.object(forKey: Key.gainTarget) != nil {
+            s.micGainTarget = defaults.double(forKey: Key.gainTarget)
+        }
         L10n.override = s.language
         return s
     }
@@ -101,6 +113,8 @@ struct Settings: Sendable, Equatable {
         defaults.set(appModes.mapValues(\.rawValue), forKey: Key.appModes)
         defaults.set(defaultMode.rawValue, forKey: Key.defaultMode)
         defaults.set(seenApps, forKey: Key.seenApps)
+        defaults.set(micGainLockEnabled, forKey: Key.gainLock)
+        defaults.set(micGainTarget, forKey: Key.gainTarget)
         L10n.override = language
     }
 }
