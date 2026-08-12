@@ -52,6 +52,7 @@ export interface Copy {
       micOff: string
       micOn: string
       speaker: string
+      song: string
       loud: string
       quiet: string
       transcript: string
@@ -176,7 +177,8 @@ export const ja: Copy = {
       micOff: 'まだ喋っていない',
       micOn: '喋りはじめた',
       speaker: '部屋のスピーカー',
-      loud: '鳴っている',
+      song: '君と歩いた　あの日の',
+      loud: '曲が流れている',
       quiet: '小さくなった',
       transcript: '音声入力の結果',
       line: '議事録から箇条書きにして',
@@ -373,7 +375,8 @@ export const en: Copy = {
       micOff: 'Not talking yet',
       micOn: 'Started talking',
       speaker: 'Room speaker',
-      loud: 'Playing',
+      song: 'walking with you　that day',
+      loud: 'Music playing',
       quiet: 'Turned down',
       transcript: 'What the mic hears',
       line: 'Pull the action items from the notes',
