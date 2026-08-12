@@ -121,9 +121,13 @@ final class MicMonitor: @unchecked Sendable {
             mSelector: kAudioObjectPropertyName,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMain)
-        var name: CFString = "" as CFString
-        var size = UInt32(MemoryLayout<CFString>.size)
-        let status = AudioObjectGetPropertyData(device, &address, 0, nil, &size, &name)
-        return status == noErr ? (name as String) : "?"
+        // CoreAudio は +1 された参照を書き込んでくるので Unmanaged で受ける。
+        // CFString を直接 inout で渡すと、その +1 が解放されず漏れる。
+        var name: Unmanaged<CFString>?
+        var size = UInt32(MemoryLayout<Unmanaged<CFString>?>.size)
+        guard AudioObjectGetPropertyData(device, &address, 0, nil, &size, &name) == noErr,
+              let value = name?.takeRetainedValue()
+        else { return "?" }
+        return value as String
     }
 }

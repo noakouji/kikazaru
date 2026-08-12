@@ -18,7 +18,7 @@ if CommandLine.arguments.count >= 3, CommandLine.arguments[1] == "--export-poste
     exit(0)
 }
 if CommandLine.arguments.count >= 3, CommandLine.arguments[1] == "--export-about" {
-    await AboutExporter.run(into: CommandLine.arguments[2])
+    AboutExporter.run(into: CommandLine.arguments[2])
     exit(0)
 }
 

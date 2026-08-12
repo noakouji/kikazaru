@@ -50,10 +50,13 @@ enum MicUsers {
     private static func string(_ object: AudioObjectID,
                                _ selector: AudioObjectPropertySelector) -> String? {
         var a = address(selector)
-        var size = UInt32(MemoryLayout<CFString?>.size)
-        var value: CFString?
-        guard AudioObjectGetPropertyData(object, &a, 0, nil, &size, &value) == noErr else { return nil }
-        return value as String?
+        // +1 された参照が返るので Unmanaged で受け取り、takeRetainedValue で釣り合わせる
+        var size = UInt32(MemoryLayout<Unmanaged<CFString>?>.size)
+        var value: Unmanaged<CFString>?
+        guard AudioObjectGetPropertyData(object, &a, 0, nil, &size, &value) == noErr,
+              let string = value?.takeRetainedValue()
+        else { return nil }
+        return string as String
     }
 
     private static func flag(_ object: AudioObjectID,

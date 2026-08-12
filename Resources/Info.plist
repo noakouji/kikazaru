@@ -13,7 +13,7 @@
     <key>CFBundleVersion</key>         <string>1</string>
     <key>LSMinimumSystemVersion</key>  <string>14.0</string>
     <key>LSUIElement</key>             <true/>
-    <key>NSHumanReadableCopyright</key><string>no plan inc.</string>
+    <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Koji Okada. MIT License.</string>
 
     <!-- スピーカーを探すために同じネットワーク上の機器へアクセスする -->
     <key>NSLocalNetworkUsageDescription</key>

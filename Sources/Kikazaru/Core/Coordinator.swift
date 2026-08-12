@@ -191,7 +191,7 @@ final class Coordinator {
         refreshTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 300_000_000_000)  // 5分
-                guard let self, await self.state == .idle else { continue }
+                guard let self, self.state == .idle else { continue }
                 await self.refreshTargets()
             }
         }
