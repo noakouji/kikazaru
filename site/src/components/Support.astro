@@ -22,15 +22,13 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
 
     <div class="cards">
       <div class="card">
-        <span class="ico">🛠</span>
-        <h3>{s.bugTitle}</h3>
+        <h3><span class="ico">🛠</span>{s.bugTitle}</h3>
         <p>{s.bugBody}</p>
         <a class="btn" href={formHref} target="_blank" rel="noopener">{s.bugBtn}</a>
       </div>
 
       <div class="card kofi-card">
-        <span class="ico">☕️</span>
-        <h3>{s.kofiTitle}</h3>
+        <h3><span class="ico">☕️</span>{s.kofiTitle}</h3>
         <p>{s.kofiBody}</p>
         <iframe
           class="kofi"
@@ -62,11 +60,20 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
     flex-direction: column;
   }
 
-  .ico { font-size: 26px; margin-bottom: 10px; }
-
+  /* 絵文字は単独の行に置かない。1個だけ浮くと孤立して見える。
+     見出しの一部にすると、記号として役割が生まれる */
   .card h3 {
     font-size: 17px;
     margin-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+  }
+
+  .ico {
+    font-size: 19px;
+    line-height: 1;
+    flex: none;
   }
 
   .card p {

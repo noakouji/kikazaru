@@ -14,6 +14,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp ".build/$CONFIG/Kikazaru" "$APP/Contents/MacOS/Kikazaru"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
+cp Resources/Kikazaru.icns "$APP/Contents/Resources/Kikazaru.icns"
 
 echo "▶ 署名（ローカル実行用のad-hoc署名）"
 codesign --force --deep --sign - "$APP"
