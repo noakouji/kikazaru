@@ -42,6 +42,9 @@ AirPlay 経由の Sonos は遅延が 2 秒前後あり、しかも別クロッ�
 Sonos 以外は **初期状態でオフ**。テレビなど下げてほしくない機器を勝手に操作しないため、
 設定画面で明示的にチェックを入れて有効にする。
 
+**Bose SoundTouch を持っている人、他社のスピーカーを使っている人からの報告を歓迎します。**
+動いた・動かなかったのどちらでも、Issue に書いてもらえると対応表が埋まります。
+
 ## 動作要件
 
 - macOS 14 以降
@@ -73,6 +76,9 @@ open build/Kikazaru.app
 ```bash
 ./.build/debug/Kikazaru --scan       # 見つかるスピーカーを一覧する
 ./.build/debug/Kikazaru --selftest   # 読み書きを確認する（音量は変えない）
+
+# 資料用。実機を探さず架空のスピーカーで設定画面を開く
+open build/Kikazaru.app --args --demo --lang en --show-settings
 ```
 
 ## 設定
@@ -188,6 +194,13 @@ Swift 版の元になった Python 実装と、開発時に使った診断スク
 | `tools/gainlog.py` | 入力音量の変化を高頻度で記録 |
 | `tools/gainwatch.py` | 入力・出力音量とマイク状態を長時間記録（スリープ検出付き） |
 
+## ダウンロード
+
+配布サイト: https://kikazaru.koji-okada.workers.dev
+
+Apple の開発者登録をしていないため、初回だけ右クリック →「開く」が必要になる。
+手順はサイトに図付きで書いてある。
+
 ## ライセンス
 
-Private.
+MIT License. 詳細は [LICENSE](LICENSE) を参照。

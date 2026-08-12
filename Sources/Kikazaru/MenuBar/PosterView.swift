@@ -200,10 +200,10 @@ struct PosterView: View {
                     .font(.system(size: 13, weight: .semibold))
 
                 speakerGroup("Sonos", badge: "推奨", rows: [
-                    ("オフィス", true), ("オフィス 2", true),
+                    ("リビング", true), ("書斎", true),
                 ])
                 speakerGroup("Google Home", badge: nil, rows: [
-                    ("リビング", false), ("プロジェクター", false),
+                    ("キッチン", false), ("寝室", false),
                 ])
                 Spacer(minLength: 0)
             }
