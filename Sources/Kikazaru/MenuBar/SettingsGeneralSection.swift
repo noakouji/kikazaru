@@ -69,5 +69,7 @@ enum Links {
     /// 配布サイト
     static let website = "https://kikazaru.koji-okada.workers.dev"
     /// 支援
-    static let kofi = "https://ko-fi.com/kojiokada"
+    /// Ko-fi へ直接飛ばさず、こちらの説明ページを経由する。
+    /// いきなり決済画面が出るより、何に使うのかを読んでから決められるほうがいい。
+    static let kofi = "https://kikazaru.koji-okada.workers.dev/support"
 }

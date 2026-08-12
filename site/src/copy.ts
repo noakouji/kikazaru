@@ -83,6 +83,26 @@ export interface Copy {
     kofiFallback: string
   }
   foot: { made: string; install: string; support: string; copy: string }
+  page: {
+    title: string
+    description: string
+    back: string
+    heading: string
+    lead: string
+    freeHeading: string
+    freeBody: [string, string]
+    moneyHeading: string
+    moneyBody: string
+    moneyList: string[]
+    nothingHeading: string
+    nothingBody: string
+    payHeading: string
+    payNote: string
+    otherHeading: string
+    otherBody: string
+    otherList: { title: string; body: string }[]
+    closing: string
+  }
 }
 
 export const ja: Copy = {
@@ -223,8 +243,8 @@ export const ja: Copy = {
     bugBtn: '要望・バグ報告を送る',
     kofiTitle: '役に立ったら',
     kofiBody:
-      'Kikazaru はこれからも無料のままにします。もし毎日の作業が少し楽になったら、下から気持ちをいただけると嬉しいです。金額は 500円 から選べます。',
-    kofiBtn: 'コーヒーをおごる',
+      'Kikazaru はこれからも無料のままにします。もし毎日の作業が少し楽になったら、300円から。何に使うのかも書いてあります。',
+    kofiBtn: 'コーヒーをおごる →',
     kofiFallback: 'うまく表示されないときは Ko-fi のページで',
   },
   foot: {
@@ -232,6 +252,37 @@ export const ja: Copy = {
     install: 'インストール方法',
     support: '要望・バグ報告',
     copy: 'Kikazaru · macOS 14 以降 · 無料',
+  },
+  page: {
+    title: 'Kikazaru を支える — Kikazaru',
+    description: 'Kikazaru はこれからも無料です。もし役に立ったら、コーヒー1杯ぶんだけ。',
+    back: 'Kikazaru にもどる',
+    heading: '役に立ったら、コーヒー1杯ぶんだけ',
+    lead: 'Kikazaru は無料です。これからも無料のままにします。ここは「払わなくていいけど、払いたい人のために置いてある場所」です。',
+    freeHeading: 'なぜ無料のままにするのか',
+    freeBody: [
+      '自分が毎日困っていたから作ったものです。同じことで困っている人が、値段を理由に試せないのはもったいない。',
+      'それに、対応スピーカーを増やしていくには、持っている人に試してもらうしかありません。まず使ってもらうほうが、この道具にとっては得です。',
+    ],
+    moneyHeading: 'もらったお金は何に消えるか',
+    moneyBody: '正直に書くと、いまのところ出ていくお金はこれくらいです。',
+    moneyList: [
+      'Apple の開発者登録（年 99 ドル）。ここが埋まると、インストール時の警告が消えて右クリックの儀式が要らなくなります',
+      '対応させたいスピーカーの実機。Bose SoundTouch はまだ手元になく、コードだけ書いて未確認のままです',
+      'サイトとドメインの維持費',
+    ],
+    nothingHeading: '見返りはありません',
+    nothingBody: '支援した人だけ機能が増える、みたいなことはしません。全員が同じものを使えるほうが、この手の道具は健全だと思っています。名前を出すこともしません（Ko-fi のメッセージ欄に書いてもらえれば返信はします）。',
+    payHeading: 'ここから',
+    payNote: '300円から選べます。カードか PayPal で、アカウント登録は要りません。',
+    otherHeading: 'お金以外で助かること',
+    otherBody: 'むしろこちらのほうが効きます。',
+    otherList: [
+      { title: 'Bose SoundTouch を持っている', body: '実機がなくて未検証のままです。動いた/動かなかったを教えてもらえると、対応表が1行埋まります' },
+      { title: '動かなかった環境を教える', body: 'どのMac・どのmacOS・どのスピーカーで駄目だったか。それだけで直せることが多いです' },
+      { title: '同じことで困っている人に渡す', body: 'かなりニッチな道具なので、届く相手は限られています' },
+    ],
+    closing: '読んでくれてありがとうございます。使ってもらえるだけで作った甲斐があります。',
   },
 }
 
@@ -373,8 +424,8 @@ export const en: Copy = {
     bugBtn: 'Send feedback',
     kofiTitle: 'If it earned its place',
     kofiBody:
-      'Kikazaru stays free. If it makes your day a little smoother, anything from ¥500 is very welcome.',
-    kofiBtn: 'Buy me a coffee',
+      'Kikazaru stays free. If it makes your day a little smoother, anything from ¥300 helps. The page says where it goes.',
+    kofiBtn: 'Buy me a coffee →',
     kofiFallback: 'Not loading? Open the Ko-fi page instead',
   },
   foot: {
@@ -382,6 +433,37 @@ export const en: Copy = {
     install: 'How to install',
     support: 'Feedback',
     copy: 'Kikazaru · macOS 14+ · Free',
+  },
+  page: {
+    title: 'Support Kikazaru — Kikazaru',
+    description: 'Kikazaru is free and stays free. If it earned its place, a coffee is welcome.',
+    back: 'Back to Kikazaru',
+    heading: 'If it earned its place, buy me a coffee',
+    lead: 'Kikazaru is free, and it stays free. This page exists for people who want to chip in — not because anyone has to.',
+    freeHeading: 'Why it stays free',
+    freeBody: [
+      'I built it because it annoyed me every day. It would be a shame if someone with the same problem skipped it over a price tag.',
+      'And the only way to support more speakers is for people who own them to try it. Getting it into hands beats getting paid.',
+    ],
+    moneyHeading: 'Where the money actually goes',
+    moneyBody: 'Being honest about it, this is roughly what it costs to keep going.',
+    moneyList: [
+      "Apple's developer program ($99/year). Once that is covered, the scary install warning disappears and the right-click ritual goes away",
+      'Speakers to test against. Bose SoundTouch support is written but has never touched real hardware',
+      'Hosting and the domain',
+    ],
+    nothingHeading: 'You get nothing in return',
+    nothingBody: 'No supporter-only features. Everyone runs the same build — for a tool like this, that feels right. No public list of names either, though I will reply if you leave a message on Ko-fi.',
+    payHeading: 'Here',
+    payNote: 'From ¥300. Card or PayPal, no account needed.',
+    otherHeading: 'Things that help more than money',
+    otherBody: 'Genuinely, these are worth more.',
+    otherList: [
+      { title: 'You own a Bose SoundTouch', body: 'The code exists but has never run against real hardware. Telling me whether it worked fills in a row of the table' },
+      { title: 'Tell me where it broke', body: 'Which Mac, which macOS, which speaker. That is usually enough to fix it' },
+      { title: 'Pass it to someone with the same problem', body: 'It is a niche tool, so it only reaches people through people' },
+    ],
+    closing: 'Thanks for reading. People actually using it is already the point.',
   },
 }
 

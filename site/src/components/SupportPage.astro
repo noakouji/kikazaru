@@ -1,0 +1,252 @@
+---
+import type { Copy } from '../copy'
+import Base from '../layouts/Base.astro'
+
+interface Props {
+  t: Copy
+}
+const { t } = Astro.props
+const c = t.page
+
+const kofi = 'https://ko-fi.com/kojiokada'
+const kofiPanel = `${kofi}/?hidefeed=true&widget=true&embed=true&preview=true`
+const home = t.lang === 'ja' ? '/' : '/en'
+const altPage = t.lang === 'ja' ? '/en/support' : '/support'
+---
+
+<Base title={c.title} description={c.description} htmlLang={t.htmlLang} altHref={altPage}>
+  <nav class="topbar">
+    <div class="wrap bar-inner">
+      <a class="back" href={home}>← {c.back}</a>
+      <div class="lang" role="group" aria-label="Language">
+        <a href="/support" class:list={['seg', { on: t.lang === 'ja' }]} title="日本語">JA</a>
+        <a href="/en/support" class:list={['seg', { on: t.lang === 'en' }]} title="English">EN</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="wrap doc">
+    <header class="head">
+      <span class="mark">🙉</span>
+      <h1>{c.heading}</h1>
+      <p class="lead">{c.lead}</p>
+    </header>
+
+    {/* 先に払う場所を出す。読み終わらないと払えない作りにしない */}
+    <section class="pay" id="pay">
+      <h2>{c.payHeading}</h2>
+      <iframe class="kofi" src={kofiPanel} title={c.payHeading} height="520" loading="lazy"></iframe>
+      <p class="fine">{c.payNote}</p>
+    </section>
+
+    <section>
+      <h2>{c.freeHeading}</h2>
+      {c.freeBody.map((p) => <p>{p}</p>)}
+    </section>
+
+    <section>
+      <h2>{c.moneyHeading}</h2>
+      <p>{c.moneyBody}</p>
+      <ul class="spend">
+        {c.moneyList.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section>
+      <h2>{c.nothingHeading}</h2>
+      <p>{c.nothingBody}</p>
+    </section>
+
+    <section>
+      <h2>{c.otherHeading}</h2>
+      <p>{c.otherBody}</p>
+      <div class="others">
+        {c.otherList.map((o) => (
+          <div class="other">
+            <h3>{o.title}</h3>
+            <p>{o.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <p class="closing">{c.closing}</p>
+
+    <p class="back-foot"><a href={home}>← {c.back}</a></p>
+  </article>
+</Base>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(247, 245, 241, 0.86);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+
+  .back:hover { color: var(--ink); }
+
+  .lang {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 2px;
+  }
+
+  .seg {
+    min-width: 34px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    text-decoration: none;
+    padding: 7px 0;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .seg.on {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 読み物なので本文幅を絞る。トップページの880pxだと長すぎる */
+  .doc {
+    width: min(620px, calc(100% - 40px));
+    padding: 56px 0 90px;
+  }
+
+  .head { margin-bottom: 44px; }
+
+  .mark {
+    font-size: 52px;
+    line-height: 1;
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-size: clamp(24px, 5vw, 34px);
+    margin-bottom: 18px;
+  }
+
+  .lead {
+    color: var(--ink-soft);
+    font-size: 16px;
+  }
+
+  section { margin-bottom: 44px; }
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  section p {
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  section p + p { margin-top: 12px; }
+
+  /* 払う場所。読み進めなくても目に入るよう、面で区切る */
+  .pay {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .kofi {
+    width: 100%;
+    max-width: 440px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .fine {
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  .spend {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+
+  .spend li {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .spend li::before {
+    content: '·';
+    position: absolute;
+    left: 6px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .others {
+    display: grid;
+    gap: 2px;
+    margin-top: 16px;
+  }
+
+  .other {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .other h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .other p { font-size: 14px; }
+
+  .closing {
+    color: var(--ink-soft);
+    font-size: 15px;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
+
+  .back-foot {
+    margin-top: 34px;
+    font-size: 15px;
+  }
+
+  .back-foot a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+  }
+</style>

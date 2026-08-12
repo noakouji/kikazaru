@@ -4,15 +4,14 @@ import type { Copy } from '../copy'
 interface Props {
   t: Copy
   formHref: string
-  kofiHref: string
 }
-const { t, formHref, kofiHref } = Astro.props
+const { t, formHref } = Astro.props
 const s = t.support
 
-// 無料で配っているものなので、支援の導線は目立たせすぎない。
-// ただし Ko-fi のページへ飛ばすと、金額を選ぶ前に一度サイトを離れることになる。
-// パネルをそのまま埋め込んで、ここで完結できるようにする。
-const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=true`
+// トップには支払いパネルを置かない。ここに埋めると、
+// 「使い方を読みに来た人」の画面にいきなり金額が出て圧が強い。
+// 詳しく知りたい人だけ専用ページへ送る。
+const supportHref = t.lang === 'ja' ? '/support' : '/en/support'
 ---
 
 <section class="section" id="support">
@@ -27,17 +26,10 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
         <a class="btn" href={formHref} target="_blank" rel="noopener">{s.bugBtn}</a>
       </div>
 
-      <div class="card kofi-card">
+      <div class="card">
         <h3><span class="ico">☕️</span>{s.kofiTitle}</h3>
         <p>{s.kofiBody}</p>
-        <iframe
-          class="kofi"
-          src={kofiPanel}
-          title={s.kofiBtn}
-          height="520"
-          loading="lazy"
-        ></iframe>
-        <a class="fallback" href={kofiHref} target="_blank" rel="noopener">{s.kofiFallback}</a>
+        <a class="btn kofi" href={supportHref}>{s.kofiBtn}</a>
       </div>
     </div>
   </div>
@@ -112,28 +104,6 @@ const kofiPanel = `${kofiHref}/?hidefeed=true&widget=true&embed=true&preview=tru
     color: var(--ink-faint);
     font-weight: 400;
   }
-
-  /* Ko-fi のパネルはあちらの意匠なので、枠で囲って「外部のもの」として見せる */
-  .kofi {
-    /* パネル自体の中身は 400px 程度。広げても余白が増えるだけなので抑える */
-    width: 100%;
-    max-width: 440px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: #fff;
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .kofi-card p { margin-bottom: 14px; }
-
-  .fallback {
-    font-size: 12.5px;
-    color: var(--ink-faint);
-    text-underline-offset: 3px;
-  }
-
-  .fallback:hover { color: var(--accent); }
 
 
 </style>
