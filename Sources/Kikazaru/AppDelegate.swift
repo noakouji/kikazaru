@@ -9,7 +9,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !Self.terminateIfAlreadyRunning() else { return }
-        let settings = Settings.load()
+        var settings = Settings.load()
+
+        // 資料用モード。実機を探さず架空の一覧を並べるので、
+        // 公開する画像に自宅の部屋名が写り込まない。表示言語も固定できる。
+        let isDemo = CommandLine.arguments.contains("--demo")
+        if let i = CommandLine.arguments.firstIndex(of: "--lang"),
+           i + 1 < CommandLine.arguments.count {
+            settings.language = CommandLine.arguments[i + 1] == "en" ? .english : .japanese
+            L10n.override = settings.language
+        }
 
         let speakers = SpeakersAction()
         var actions: [DuckAction] = [speakers]
@@ -42,7 +51,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         Task {
-            await model.refreshWithRetry()
+            if isDemo {
+                let list = DemoSpeaker.sample()
+                model.loadSample(list)
+                for speaker in list where speaker.kind == .googleCast {
+                    model.setEnabled(false, for: speaker)
+                }
+                model.loadSample(list)
+                model.setSeenApps(["aquavoice.macOSBridge", "com.google.Chrome", "us.zoom.xos"])
+                // Settings.load() が走るたびに保存済みの言語へ戻るので、ここで指定を戻す
+                L10n.override = settings.language
+            } else {
+                await model.refreshWithRetry()
+            }
             await coordinator.start()
             statusItem?.rebuildMenu()
             // 資料用にウインドウを開いた状態で立ち上げるためのモード

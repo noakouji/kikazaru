@@ -1,10 +1,13 @@
 ---
+import type { Copy } from '../copy'
 import Figures from './Figures.astro'
 
 interface Props {
+  t: Copy
   formHref: string
 }
-const { formHref } = Astro.props
+const { t, formHref } = Astro.props
+const c = t.install
 
 // このページで一番大事なところ。
 // 署名なしで配っているので、受け取った人は必ず一度ブロックされる。
@@ -13,97 +16,45 @@ const { formHref } = Astro.props
 
 <section class="section" id="install">
   <div class="wrap">
-    <p class="section-label">インストール</p>
-    <h2>はじめの5ステップ</h2>
-    <p class="lead intro">
-      全部で1分ほどです。3つめだけ、ふつうと違うので気をつけてください。
-    </p>
+    <p class="section-label">{c.label}</p>
+    <h2>{c.heading}</h2>
+    <p class="lead intro">{c.intro}</p>
 
     <div class="callout">
-      <p>
-        Kikazaru は Apple に開発元の登録をしていない個人アプリです。そのままダブルクリックすると
-        <strong>「開発元を検証できないため開けません」</strong> と出て止まります。
-        壊れているわけではありません。
-      </p>
-      <p class="small">
-        個人が趣味で配っているアプリなので、この形になっています。
-        ここだけ、お手数をおかけします。
-      </p>
+      <p>{c.calloutMain[0]}<strong>{c.calloutMain[1]}</strong>{c.calloutMain[2]}</p>
+      <p class="small">{c.calloutSub}</p>
     </div>
 
     <ol class="steps">
-      <li>
-        <div class="text">
-          <h3>ダウンロードした <code>Kikazaru.zip</code> をダブルクリックする</h3>
-          <p>同じ場所に <code>Kikazaru.app</code> が出てきます。</p>
-        </div>
-      </li>
-
-      <li>
-        <div class="text">
-          <h3><code>Kikazaru.app</code> を「アプリケーション」フォルダへ移す</h3>
-          <p>必須ではありませんが、入れておくと迷子になりません。</p>
-        </div>
-      </li>
-
-      <li class="key">
-        <div class="text">
-          <h3>アイコンを<strong>右クリック</strong>して「開く」を選ぶ</h3>
-          <p>
-            ここが唯一のコツです。<strong>ダブルクリックでは開けません。</strong>
-            トラックパッドなら二本指クリック、または control キーを押しながらクリックでも同じです。
-          </p>
-        </div>
-        <figure><Figures kind="contextMenu" /></figure>
-      </li>
-
-      <li class="key">
-        <div class="text">
-          <h3>確認の画面で、もう一度「開く」を押す</h3>
-          <p>
-            これで許可されます。<strong>2回目からは普通にダブルクリックで開けます。</strong>
-            この画面が出るのは最初の1回だけです。
-          </p>
-        </div>
-        <figure><Figures kind="dialog" /></figure>
-      </li>
-
-      <li>
-        <div class="text">
-          <h3>画面いちばん上に 🐵 が出たら完了</h3>
-          <p>
-            アプリの窓は開きません。メニューバーに住むタイプのアプリです。
-            クリックすると設定が開きます。
-          </p>
-        </div>
-        <figure><Figures kind="menubar" /></figure>
-      </li>
+      {c.steps.map((step) => (
+        <li class={step.key ? 'key' : undefined}>
+          <div class="text">
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </div>
+          {step.figure && (
+            <figure><Figures kind={step.figure} lang={t.lang} /></figure>
+          )}
+        </li>
+      ))}
     </ol>
 
     <div class="after">
-      <h3>最初にやること</h3>
-      <p>
-        設定を開くと、同じネットワークにあるスピーカーが自動で並びます。
-        <strong>下げたいものにチェックを入れるだけ</strong>で準備は終わりです。
-        IPアドレスの入力などは要りません。
-      </p>
-      <figure class="wide"><img src="/app-settings.png" width="900" height="1080" alt="Kikazaru の設定画面" loading="lazy" /></figure>
-      <p class="small">
-        Sonos 以外は、うっかりテレビを下げてしまわないよう初期状態ではオフです。
-        使いたいものだけチェックを入れてください。
-      </p>
+      <h3>{c.afterHeading}</h3>
+      <p>{c.afterBody[0]}<strong>{c.afterBody[1]}</strong></p>
+      <figure class="wide">
+        <img src={t.shot.image} width="650" height="900" alt={t.shot.alt} loading="lazy" />
+      </figure>
+      <p class="small">{c.afterFine}</p>
     </div>
 
     <div class="trouble">
-      <h3>それでも開けないときは</h3>
-      <p>
-        システム設定 → プライバシーとセキュリティ を開いてください。下のほうに
-        「Kikazaru は開発元を確認できないため、使用がブロックされました」という行と
-        <strong>「このまま開く」</strong> ボタンが出ています。そこからも開けます。
-      </p>
+      <h3>{c.troubleHeading}</h3>
+      <p>{c.troubleBody[0]}<strong>{c.troubleBody[1]}</strong>{c.troubleBody[2]}</p>
       <p class="small">
-        どうしても駄目なら <a href={formHref} target="_blank" rel="noopener">こちらから状況を教えてください</a>。
-        お使いの Mac と macOS のバージョンを書いていただけると助かります。
+        {c.troubleTail[0]}
+        <a href={formHref} target="_blank" rel="noopener">{c.troubleLink}</a>
+        {c.troubleTail[1]}
       </p>
     </div>
   </div>

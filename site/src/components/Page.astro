@@ -1,0 +1,271 @@
+---
+import type { Copy } from '../copy'
+import Base from '../layouts/Base.astro'
+import Hero from './Hero.astro'
+import Problem from './Problem.astro'
+import Install from './Install.astro'
+import Support from './Support.astro'
+
+interface Props {
+  t: Copy
+}
+const { t } = Astro.props
+
+// 差し替えが1か所で済むように、外部リンクはここにまとめる。
+const links = {
+  download: '/Kikazaru.zip',
+  form: 'https://docs.google.com/forms/d/e/1FAIpQLSefXhorrRPZcoxn_hRgREMqL48qcicouq6lu3wExYi97xUYjQ/viewform',
+  kofi: 'https://ko-fi.com/kojiokada',
+}
+---
+
+<Base title={t.meta.title} description={t.meta.description} htmlLang={t.htmlLang} altHref={t.altHref}>
+  <nav class="topbar">
+    <div class="wrap bar-inner">
+      <a class="brand" href={t.lang === 'ja' ? '/' : '/en'}>
+        <span class="brand-mark">🙉</span> Kikazaru
+      </a>
+      <div class="bar-right">
+        <a class="lang" href={t.altHref}>{t.altLabel}</a>
+        <a class="bar-dl" href={links.download} download>{t.nav.download}</a>
+      </div>
+    </div>
+  </nav>
+
+  <Hero t={t} downloadHref={links.download} />
+
+  <section class="shot-band">
+    <div class="wrap shot-inner">
+      <img class="shot" src={t.shot.image} width="650" height="900" alt={t.shot.alt} loading="lazy" />
+      <div class="shot-note">
+        <h2>{t.shot.heading}</h2>
+        <p set:html={t.shot.body.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')} />
+        <p class="fine">{t.shot.fine}</p>
+      </div>
+    </div>
+  </section>
+
+  <Problem t={t} />
+
+  <section class="section">
+    <div class="wrap">
+      <p class="section-label">{t.steps.label}</p>
+      <h2>{t.steps.heading}</h2>
+      <div class="steps">
+        {t.steps.items.map((s) => (
+          <div class="step">
+            <span class="emoji">{s.emoji}</span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </div>
+        ))}
+      </div>
+      <p class="lead">{t.steps.tail}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="section-label">{t.speakers.label}</p>
+      <h2>{t.speakers.heading}</h2>
+      <ul class="speakers">
+        {t.speakers.rows.map((s) => (
+          <li class={s.state}>
+            <span class="dot"></span>
+            <strong>{s.name}</strong>
+            <span class="note">{s.note}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="lead">{t.speakers.tail}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="section-label">{t.why.label}</p>
+      <h2>{t.why.heading}</h2>
+      <p class="lead ctx">{t.why.body[0]}</p>
+      <p class="lead ctx">{t.why.body[1]}<strong>{t.why.body[2]}</strong></p>
+    </div>
+  </section>
+
+  <Install t={t} formHref={links.form} />
+  <Support t={t} formHref={links.form} kofiHref={links.kofi} />
+
+  <footer class="foot">
+    <div class="wrap">
+      <p class="made">{t.foot.made}</p>
+      <div class="foot-links">
+        <a href="#install">{t.foot.install}</a>
+        <a href="#support">{t.foot.support}</a>
+        <a href={t.altHref}>{t.altLabel}</a>
+      </div>
+      <p class="copy">{t.foot.copy}</p>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(247, 245, 241, 0.86);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .brand {
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+  }
+
+  .brand-mark { font-size: 19px; }
+
+  .bar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lang {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+  }
+
+  .lang:hover { background: var(--paper-deep); }
+
+  .bar-dl {
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 7px;
+    background: var(--dark);
+    color: var(--paper);
+  }
+
+  .shot-band {
+    background: var(--paper-deep);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 56px 0;
+  }
+
+  .shot-inner {
+    display: grid;
+    grid-template-columns: 330px 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .shot {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+  }
+
+  .shot-note h2 { font-size: clamp(20px, 3.6vw, 26px); margin-bottom: 14px; }
+  .shot-note p { font-size: 15px; color: var(--ink-soft); }
+  .shot-note p + p { margin-top: 12px; }
+  .shot-note strong { color: var(--ink); }
+  .fine { font-size: 13.5px; }
+
+  .ctx { max-width: 38em; }
+  .ctx + .ctx { margin-top: 14px; }
+  .ctx strong { color: var(--ink); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .step {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .emoji { font-size: 28px; display: block; margin-bottom: 8px; }
+  .step h3 { font-size: 16px; margin-bottom: 4px; }
+  .step p { font-size: 14px; color: var(--ink-soft); }
+
+  .speakers {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: grid;
+    gap: 2px;
+  }
+
+  .speakers li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 11px 2px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: none;
+    transform: translateY(-1px);
+  }
+
+  .ok .dot { background: var(--ok); }
+  .wip .dot { background: #d08a3c; }
+  .sub .dot { background: var(--ink-faint); }
+
+  .speakers strong { font-weight: 600; }
+  .note { font-size: 13.5px; color: var(--ink-faint); }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    padding: 46px 0 64px;
+  }
+
+  .made { color: var(--ink-soft); font-size: 15px; max-width: 32em; }
+
+  .foot-links {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin: 20px 0 26px;
+  }
+
+  .foot-links a { color: var(--accent); font-size: 15px; text-underline-offset: 3px; }
+  .copy { font-size: 13px; color: var(--ink-faint); }
+
+  @media (max-width: 720px) {
+    .shot-inner { grid-template-columns: 1fr; gap: 24px; }
+    .shot { max-width: 320px; }
+  }
+
+  @media (max-width: 640px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>

@@ -60,6 +60,12 @@ final class AppModel {
 
     func setSeenApps(_ apps: [String]) { seenApps = apps }
 
+    /// 説明用スクリーンショットのために、架空の一覧を流し込む。
+    func loadSample(_ list: [SpeakerControl]) {
+        speakers = list
+        hasSearched = true
+    }
+
     func noteSeen(_ bundleIDs: [String]) {
         let added = bundleIDs.filter { !seenApps.contains($0) }
         guard !added.isEmpty else { return }

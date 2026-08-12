@@ -1,5 +1,12 @@
 ---
+import type { Copy } from '../copy'
 import BeforeAfter from './BeforeAfter.astro'
+
+interface Props {
+  t: Copy
+}
+const { t } = Astro.props
+const p = t.problem
 
 // 「困っていること」ではなく「やりたいこと」から入る。
 // 音楽を止めたいのではなく、流したまま働きたい。そこを先に置く。
@@ -7,36 +14,26 @@ import BeforeAfter from './BeforeAfter.astro'
 
 <section class="problem">
   <div class="wrap">
-    <p class="label">やりたいこと</p>
-    <h2>音楽は流したまま、喋って仕事したい</h2>
-    <p class="want">
-      作業中はスピーカーで音楽をかけておきたい。でも音声入力もオンライン会議も使う。
-      この2つを両立させようとすると、いまは毎回どちらかを我慢することになります。
-    </p>
+    <p class="label">{p.label}</p>
+    <h2>{p.heading}</h2>
+    <p class="want">{p.want}</p>
 
-    <BeforeAfter />
+    <BeforeAfter t={t} />
 
     <div class="cause">
-      <h3>なぜ、勝手に止まってくれないのか</h3>
-      <p>
-        音声入力アプリも音を下げてはくれます。ただし止められるのは
-        <strong>Mac につないだスピーカーだけ</strong>です。
-      </p>
+      <h3>{p.causeHeading}</h3>
+      <p>{p.causeLead[0]}<strong>{p.causeLead[1]}</strong>{p.causeLead[2]}</p>
       <div class="split">
         <div class="case ok">
-          <span class="mark">自動で下がる</span>
-          <p>Mac につないだスピーカー<br /><small>Bluetooth・USB・AirPlay など</small></p>
+          <span class="mark">{p.okMark}</span>
+          <p>{p.okName}<br /><small>{p.okNote}</small></p>
         </div>
         <div class="case ng">
-          <span class="mark">下がらない</span>
-          <p>Sonos / Google Home<br /><small>スピーカー自身が鳴らしているため</small></p>
+          <span class="mark">{p.ngMark}</span>
+          <p>{p.ngName}<br /><small>{p.ngNote}</small></p>
         </div>
       </div>
-      <p>
-        Sonos や Google Home は、Mac ではなくスピーカー自身が音楽を再生しています。
-        Mac はその音を握っていないので、止めようがありません。
-        <strong>そこだけを埋めるのが Kikazaru です。</strong>
-      </p>
+      <p>{p.causeTail[0]}<strong>{p.causeTail[1]}</strong></p>
     </div>
   </div>
 </section>

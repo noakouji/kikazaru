@@ -1,62 +1,66 @@
 ---
+import type { Copy } from '../copy'
+
+interface Props {
+  t: Copy
+}
+const { t } = Astro.props
+const p = t.problem
+
 // 何が変わるのかを一枚で見せる。
 // 文章で「回り込みが」と説明しても伝わらないので、前後を並べる。
 ---
 
 <div class="ba">
   <div class="panel before">
-    <span class="badge">いままで</span>
+    <span class="badge">{p.before}</span>
 
     <div class="scene">
       <div class="who">
         <span class="ico">🔊</span>
         <span class="wave big">))) </span>
-        <span class="lbl">音楽が大きいまま</span>
+        <span class="lbl">{p.musicLoud}</span>
       </div>
       <div class="who">
         <span class="ico">🗣</span>
-        <span class="lbl">喋る</span>
+        <span class="lbl">{p.talking}</span>
       </div>
     </div>
 
     <div class="out bad">
-      <span class="out-label">文字起こし</span>
-      <p>議事録から箇条書きにして<mark>君と歩いた あの日の</mark></p>
+      <span class="out-label">{p.transcript}</span>
+      <p>{p.dirty}<mark>{p.dirtyMark}</mark></p>
     </div>
 
     <ul class="conseq">
-      <li>音楽をいちいち止める</li>
-      <li>ヘッドホンに付け替える</li>
-      <li>会議相手にも音楽が流れる</li>
+      {p.beforeList.map((x) => <li>{x}</li>)}
     </ul>
   </div>
 
   <div class="arrow" aria-hidden="true">→</div>
 
   <div class="panel after">
-    <span class="badge on">Kikazaru を入れると</span>
+    <span class="badge on">{p.after}</span>
 
     <div class="scene">
       <div class="who">
         <span class="ico">🔊</span>
         <span class="wave small">) </span>
-        <span class="lbl">喋る間だけ自動で下がる</span>
+        <span class="lbl">{p.musicDown}</span>
       </div>
       <div class="who">
         <span class="ico">🗣</span>
-        <span class="lbl">喋る</span>
+        <span class="lbl">{p.talking}</span>
       </div>
     </div>
 
     <div class="out good">
-      <span class="out-label">文字起こし</span>
-      <p>議事録から箇条書きにして</p>
+      <span class="out-label">{p.transcript}</span>
+      <p>{p.clean}</p>
     </div>
 
     <ul class="conseq ok">
-      <li>音楽は流したままでいい</li>
-      <li>ヘッドホンは要らない</li>
-      <li>話し終われば元の音量に戻る</li>
+      {p.afterList.map((x) => <li>{x}</li>)}
     </ul>
   </div>
 </div>

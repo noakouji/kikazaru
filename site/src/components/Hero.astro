@@ -1,31 +1,27 @@
 ---
+import type { Copy } from '../copy'
+
 interface Props {
+  t: Copy
   downloadHref: string
-  size: string
 }
-const { downloadHref, size } = Astro.props
+const { t, downloadHref } = Astro.props
 ---
 
 <header class="hero">
   <div class="wrap">
     <div class="mark">🙉</div>
     <p class="name">Kikazaru</p>
-    <h1>マイクがオンの間だけ、<br />部屋のBGMを下げる</h1>
-    <p class="sub">
-      音声入力やオンライン会議のあいだ、Sonos や Google Home を自動で静かにします。
-      話し終わると、元の音量にそのまま戻ります。
-    </p>
+    <h1 set:html={t.hero.tagline} />
+    <p class="sub">{t.hero.sub}</p>
 
     <div class="cta">
-      <a class="download" href={downloadHref} download>
-        Kikazaru をダウンロード
-      </a>
-      <span class="meta">macOS 14 以降 / 無料 / {size}</span>
+      <a class="download" href={downloadHref} download>{t.hero.download}</a>
+      <span class="meta">{t.hero.meta}</span>
     </div>
 
     <p class="note">
-      ダウンロードしたあと、<a href="#install">初回だけひと手間かかります</a>。
-      1分で終わるので、先に読んでおくと安心です。
+      {t.hero.note[0]}<a href="#install">{t.hero.note[1]}</a>{t.hero.note[2]}
     </p>
   </div>
 </header>

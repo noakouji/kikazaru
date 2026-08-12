@@ -1,9 +1,13 @@
 ---
+import type { Copy } from '../copy'
+
 interface Props {
+  t: Copy
   formHref: string
   kofiHref: string
 }
-const { formHref, kofiHref } = Astro.props
+const { t, formHref, kofiHref } = Astro.props
+const s = t.support
 
 // 無料で配っているものなので、支援の導線は目立たせすぎない。
 // ただし「どこにあるか分からない」のも困るので、独立した区画にはしておく。
@@ -11,36 +15,22 @@ const { formHref, kofiHref } = Astro.props
 
 <section class="section" id="support">
   <div class="wrap">
-    <p class="section-label">これから</p>
-    <h2>困ったことと、よかったこと</h2>
+    <p class="section-label">{s.label}</p>
+    <h2>{s.heading}</h2>
 
     <div class="cards">
       <div class="card">
         <span class="ico">🛠</span>
-        <h3>うまく動かない・こうしてほしい</h3>
-        <p>
-          対応してほしいスピーカーや、動かなかった環境を教えてください。
-          Bose SoundTouch はまだ実機で試せていないので、お持ちの方の報告が特に助かります。
-        </p>
-        <a class="btn" href={formHref} target="_blank" rel="noopener">
-          要望・バグ報告を送る
-        </a>
+        <h3>{s.bugTitle}</h3>
+        <p>{s.bugBody}</p>
+        <a class="btn" href={formHref} target="_blank" rel="noopener">{s.bugBtn}</a>
       </div>
 
       <div class="card">
         <span class="ico">☕️</span>
-        <h3>役に立ったら</h3>
-        <p>
-          Kikazaru はこれからも無料のままにします。
-          もし毎日の作業が少し楽になったら、コーヒー1杯ぶんだけ気持ちをいただけると嬉しいです。
-        </p>
-        {kofiHref ? (
-          <a class="btn kofi" href={kofiHref} target="_blank" rel="noopener">
-            コーヒーをおごる
-          </a>
-        ) : (
-          <span class="btn soon">準備中</span>
-        )}
+        <h3>{s.kofiTitle}</h3>
+        <p>{s.kofiBody}</p>
+        <a class="btn kofi" href={kofiHref} target="_blank" rel="noopener">{s.kofiBtn}</a>
       </div>
     </div>
   </div>

@@ -4,13 +4,24 @@ import SwiftUI
 enum SettingsExporter {
 
     @MainActor
-    static func run(into path: String) async {
+    static func run(into path: String, demo: Bool = false) async {
         var settings = Settings()
         settings.hotkeyEnabled = true          // 隠れている項目も含めて確認する
 
-        // 実際に検出して、一覧の見え方まで確認できるようにする
         let model = AppModel(action: SpeakersAction())
-        await model.refresh()
+        if demo {
+            // 配布物に自宅の部屋名を載せないため、架空の一覧に差し替える
+            let list = DemoSpeaker.sample()
+            model.loadSample(list)
+            for s in list where s.kind == .googleCast {
+                model.setEnabled(false, for: s)
+            }
+            model.loadSample(list)
+            model.setSeenApps(["aquavoice.macOSBridge", "com.google.Chrome", "us.zoom.xos"])
+        } else {
+            // 実際に検出して、一覧の見え方まで確認できるようにする
+            await model.refresh()
+        }
 
         let view = SettingsView(settings: settings, model: model) { _ in }
 

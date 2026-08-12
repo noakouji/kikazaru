@@ -2,8 +2,14 @@ import AppKit
 
 // 画面の見た目確認用。通常起動には影響しない。
 if CommandLine.arguments.count >= 3, CommandLine.arguments[1] == "--export-settings" {
-    let path = CommandLine.arguments[2]
-    await SettingsExporter.run(into: path)
+    // 書き出し時だけ言語を固定できるようにする（配布サイトの日英ページ用）
+    if let i = CommandLine.arguments.firstIndex(of: "--lang"),
+       i + 1 < CommandLine.arguments.count,
+       let lang = L10n.Language(rawValue: CommandLine.arguments[i + 1] == "en" ? "english" : "japanese") {
+        L10n.override = lang
+    }
+    let demo = CommandLine.arguments.contains("--demo")
+    await SettingsExporter.run(into: CommandLine.arguments[2], demo: demo)
     exit(0)
 }
 
