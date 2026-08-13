@@ -146,10 +146,12 @@ const d = t.steps.demo
     animation: typing 5s infinite;
   }
 
-  /* 左へ流れ続ける。カラオケと同じ向きで、読みながら追える */
+  /* 左へ流れ続ける。カラオケと同じ向きで、読みながら追える。
+     帯には同じものが2枚入っているので、ちょうど半分だけ動かす。
+     52% のように半分からずらすと、一周するたびに絵が飛ぶ。 */
   @keyframes drift {
-    from { transform: translateX(0%); }
-    to { transform: translateX(-52%); }
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 
   /* 喋りはじめたら、歌詞が小さく薄くなって引っ込む。
