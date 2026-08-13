@@ -46,17 +46,15 @@ export interface Copy {
   steps: {
     label: string
     heading: string
-    items: { emoji: string; title: string; body: string }[]
     tail: string
     demo: {
-      micOff: string
+      without: string
+      with: string
       micOn: string
-      speaker: string
       song: string
-      loud: string
-      quiet: string
       transcript: string
       line: string
+      dirty: string
     }
   }
   speakers: {
@@ -167,21 +165,15 @@ export const ja: Copy = {
   steps: {
     label: '動き',
     heading: '入れたあとは何もしません',
-    items: [
-      { emoji: '🎙', title: '話し始める', body: 'マイクがオンになったことを検知します' },
-      { emoji: '🙉', title: 'BGMが下がる', body: '約0.1秒でスピーカーの音量を下げます' },
-      { emoji: '🐵', title: '話し終わる', body: '元の音量にそのまま戻します' },
-    ],
     tail: 'メニューバーの絵文字が 🐵 と 🙉 で切り替わるので、いま下がっているかどうかが一目で分かります。待機中は何も動かないので、電池もほとんど食いません。',
     demo: {
-      micOff: 'まだ喋っていない',
-      micOn: '喋りはじめた',
-      speaker: '部屋のスピーカー',
+      without: 'Kikazaru なし',
+      with: 'Kikazaru あり',
+      micOn: '喋りはじめる',
       song: '君と歩いた　あの日の',
-      loud: '曲が流れている',
-      quiet: '小さくなった',
       transcript: '音声入力の結果',
       line: '議事録から箇条書きにして',
+      dirty: '君と歩いた',
     },
   },
   speakers: {
@@ -365,21 +357,15 @@ export const en: Copy = {
   steps: {
     label: 'How it behaves',
     heading: 'Install it and forget it',
-    items: [
-      { emoji: '🎙', title: 'You start talking', body: 'It notices the microphone turned on' },
-      { emoji: '🙉', title: 'The music drops', body: 'Volume falls in about 0.1 seconds' },
-      { emoji: '🐵', title: 'You stop talking', body: 'The original volume comes right back' },
-    ],
     tail: 'The menu bar shows 🐵 or 🙉, so you can see at a glance whether the room is currently turned down. Nothing runs while it waits, so it barely touches your battery.',
     demo: {
-      micOff: 'Not talking yet',
-      micOn: 'Started talking',
-      speaker: 'Room speaker',
+      without: 'Without Kikazaru',
+      with: 'With Kikazaru',
+      micOn: 'You start talking',
       song: 'walking with you　that day',
-      loud: 'Music playing',
-      quiet: 'Turned down',
       transcript: 'What the mic hears',
       line: 'Pull the action items from the notes',
+      dirty: 'walking with you',
     },
   },
   speakers: {

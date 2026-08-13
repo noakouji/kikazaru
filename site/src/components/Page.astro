@@ -57,15 +57,6 @@ const links = {
       <p class="section-label">{t.steps.label}</p>
       <h2>{t.steps.heading}</h2>
       <DuckDemo t={t} />
-      <div class="steps">
-        {t.steps.items.map((s) => (
-          <div class="step">
-            <span class="emoji">{s.emoji}</span>
-            <h3>{s.title}</h3>
-            <p>{s.body}</p>
-          </div>
-        ))}
-      </div>
       <p class="lead">{t.steps.tail}</p>
     </div>
   </section>
