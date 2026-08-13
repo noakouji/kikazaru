@@ -26,8 +26,11 @@ const d = t.steps.demo
       </div>
       <p class="out">
         <span class="out-label">{d.transcript}</span>
+        {/* 文末ではなく文の途中に割り込ませる。実際の誤認識はこう出る */}
         <span class="line">
-          <span class="clean">{d.line}</span><span class="dirt">{d.dirty}</span>
+          <span class="clean"
+            >{d.lineA}<em class="dirt">{d.dirtA}</em>{d.lineB}<em class="dirt">{d.dirtB}</em></span
+          >
         </span>
       </p>
     </div>
@@ -44,7 +47,7 @@ const d = t.steps.demo
       </div>
       <p class="out">
         <span class="out-label">{d.transcript}</span>
-        <span class="line"><span class="clean">{d.line}</span></span>
+        <span class="line"><span class="clean">{d.lineA}{d.lineB}</span></span>
       </p>
     </div>
   </div>
@@ -160,16 +163,15 @@ const d = t.steps.demo
     animation: typing 5s infinite;
   }
 
-  /* 入れなかった側にだけ、歌詞が混ざる */
+  /* 入れなかった側にだけ、歌詞が混ざる。
+     打たれていく文字と一緒に現れるので、あとから足しても行がずれない */
   .dirt {
-    display: inline-block;
-    margin-left: 6px;
+    margin: 0 4px;
     padding: 1px 6px;
     border-radius: 5px;
     background: rgba(180, 98, 47, 0.16);
     color: var(--accent);
-    opacity: 0;
-    animation: mixIn 5s infinite;
+    font-style: normal;
   }
 
   @keyframes drift {
@@ -202,17 +204,11 @@ const d = t.steps.demo
     80%, 100% { clip-path: inset(0 100% 0 0); }
   }
 
-  @keyframes mixIn {
-    0%, 56% { opacity: 0; }
-    62%, 74% { opacity: 1; }
-    80%, 100% { opacity: 0; }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     .demo * { animation: none !important; }
     .flow.quiet { transform: scale(0.5); opacity: 0.26; }
     .clean { clip-path: inset(0 0 0 0); }
-    .dirt { opacity: 1; }
     .cue { color: var(--accent); }
     .dot { opacity: 1; }
   }

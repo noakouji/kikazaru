@@ -53,9 +53,12 @@ export interface Copy {
       micOn: string
       song: string
       transcript: string
-      line: string
-      dirty: string
+      lineA: string
+      lineB: string
+      dirtA: string
+      dirtB: string
     }
+    video: { title: string; note: string }
   }
   speakers: {
     label: string
@@ -91,6 +94,13 @@ export interface Copy {
     kofiFallback: string
   }
   foot: { install: string; support: string; copy: string }
+  source: {
+    label: string
+    heading: string
+    body: [string, string]
+    cta: string
+    note: string
+  }
   page: {
     title: string
     description: string
@@ -172,8 +182,14 @@ export const ja: Copy = {
       micOn: '喋りはじめる',
       song: '君と歩いた　あの日の',
       transcript: '音声入力の結果',
-      line: '議事録から箇条書きにして',
-      dirty: '君と歩いた',
+      lineA: '議事録から',
+      lineB: '箇条書きにして',
+      dirtA: '君と歩いた',
+      dirtB: 'あの日の',
+    },
+    video: {
+      title: '実際の音で確かめる',
+      note: '33秒 / 音があります。曲が下がる瞬間と、その間に喋った声の通り方を聞いてください。',
     },
   },
   speakers: {
@@ -259,6 +275,16 @@ export const ja: Copy = {
     install: 'インストール方法',
     support: '要望・バグ報告',
     copy: 'Kikazaru · macOS 14 以降 · 無料',
+  },
+  source: {
+    label: 'ソースコード',
+    heading: '中身は全部見られます',
+    body: [
+      'Apple の開発者登録をしていないので、受け取った人には「開発元を検証できません」と出ます。何をしているか分からないアプリを、警告を押し切ってまで入れるのは怖い。',
+      'なので中身を公開しています。マイクの状態を読むだけで音声そのものは扱わないこと、外に何も送っていないことは、読めば分かります。',
+    ],
+    cta: 'GitHub で見る',
+    note: 'MIT License / Swift / 依存パッケージなし',
   },
   page: {
     title: 'Kikazaru を支える — Kikazaru',
@@ -364,8 +390,14 @@ export const en: Copy = {
       micOn: 'You start talking',
       song: 'walking with you　that day',
       transcript: 'What the mic hears',
-      line: 'Pull the action items from the notes',
-      dirty: 'walking with you',
+      lineA: 'Pull the action items',
+      lineB: 'from the notes',
+      dirtA: 'walking with you',
+      dirtB: 'that day',
+    },
+    video: {
+      title: 'Hear it happen',
+      note: '33 seconds, with sound. Listen for the moment the music drops, and how the voice cuts through while it does.',
     },
   },
   speakers: {
@@ -451,6 +483,16 @@ export const en: Copy = {
     install: 'How to install',
     support: 'Feedback',
     copy: 'Kikazaru · macOS 14+ · Free',
+  },
+  source: {
+    label: 'Source',
+    heading: 'You can read all of it',
+    body: [
+      'Kikazaru is not registered with Apple, so you will be told the developer cannot be verified. Pushing past that warning for an app you know nothing about is a fair thing to hesitate over.',
+      'So the source is open. That it only reads whether the mic is in use, never the audio itself, and sends nothing anywhere — you can check that yourself.',
+    ],
+    cta: 'View on GitHub',
+    note: 'MIT License / Swift / no dependencies',
   },
   page: {
     title: 'Support Kikazaru — Kikazaru',

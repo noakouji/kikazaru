@@ -36,25 +36,66 @@ const { title, description, htmlLang, altHref } = Astro.props
     <slot />
     <script is:inline>
       // 画面に入った要素だけを、少し遅れて浮かび上がらせる。
-      // 一度出したら観察をやめる。戻るたびに動くと、読むのを邪魔する。
-      (() => {
+      //
+      // 演出のために本文を隠すので、出し忘れは致命的になる。
+      // 監視は3通り用意して、どれか1つでも動けば必ず出るようにしてある。
+      ;(() => {
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-        const targets = document.querySelectorAll(
-          '.section .wrap > *, .shot-inner > *, .problem .wrap > *, .head > *, .pay-inner > *'
-        )
-        if (!('IntersectionObserver' in window) || !targets.length) return
+        const targets = [
+          ...document.querySelectorAll(
+            '.section .wrap > *, .shot-inner > *, .problem .wrap > *, .head > *, .pay-inner > *'
+          ),
+        ]
+        if (!targets.length) return
         targets.forEach((el) => el.classList.add('reveal'))
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (!e.isIntersecting) return
-              e.target.classList.add('shown')
-              io.unobserve(e.target)
-            })
-          },
-          { rootMargin: '0px 0px -12% 0px', threshold: 0.08 }
-        )
-        targets.forEach((el) => io.observe(el))
+
+        const show = (el) => el.classList.add('shown')
+        const sweep = () => {
+          const edge = innerHeight * 0.92
+          for (let i = targets.length - 1; i >= 0; i--) {
+            const el = targets[i]
+            if (el.getBoundingClientRect().top < edge) {
+              show(el)
+              targets.splice(i, 1)
+            }
+          }
+          if (!targets.length) {
+            removeEventListener('scroll', onScroll)
+            removeEventListener('resize', sweep)
+          }
+        }
+
+        let ticking = false
+        const onScroll = () => {
+          if (ticking) return
+          ticking = true
+          requestAnimationFrame(() => {
+            ticking = false
+            sweep()
+          })
+        }
+
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((e) => {
+                if (!e.isIntersecting) return
+                show(e.target)
+                io.unobserve(e.target)
+              })
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+          )
+          targets.forEach((el) => io.observe(el))
+        }
+
+        addEventListener('scroll', onScroll, { passive: true })
+        addEventListener('resize', sweep)
+        sweep()
+
+        // 何かの理由でどれも効かなかったときの最後の保険。
+        // 演出は失われるが、本文が見えないよりずっとよい。
+        setTimeout(() => targets.slice().forEach(show), 4000)
       })()
     </script>
   </body>
