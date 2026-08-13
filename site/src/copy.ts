@@ -16,6 +16,7 @@ export interface Copy {
     download: string
     meta: string
     note: [string, string, string]
+    repo: string
   }
   shot: { heading: string; body: string; fine: string; alt: string; image: string }
   problem: {
@@ -58,7 +59,6 @@ export interface Copy {
       dirtA: string
       dirtB: string
     }
-    video: { title: string; note: string }
   }
   speakers: {
     label: string
@@ -97,7 +97,6 @@ export interface Copy {
   source: {
     label: string
     heading: string
-    body: [string, string]
     cta: string
     note: string
   }
@@ -135,6 +134,7 @@ export const ja: Copy = {
     sub: '音声入力やオンライン会議の間、Sonos や Google Home の音量を下げます。話し終われば元に戻ります。',
     download: 'Kikazaru をダウンロード',
     meta: 'macOS 14 以降 / 無料 / 約 400 KB',
+    repo: 'ソースコード',
     note: ['ダウンロードしたあと、', '初回だけひと手間かかります', '。1分で終わります。'],
   },
   shot: {
@@ -186,10 +186,6 @@ export const ja: Copy = {
       lineB: '箇条書きにして',
       dirtA: '君と歩いた',
       dirtB: 'あの日の',
-    },
-    video: {
-      title: '実際の音で確かめる',
-      note: '33秒 / 音があります。曲が下がる瞬間と、その間に喋った声の通り方を聞いてください。',
     },
   },
   speakers: {
@@ -279,10 +275,6 @@ export const ja: Copy = {
   source: {
     label: 'ソースコード',
     heading: '中身は全部見られます',
-    body: [
-      'Apple の開発者登録をしていないので、受け取った人には「開発元を検証できません」と出ます。何をしているか分からないアプリを、警告を押し切ってまで入れるのは怖い。',
-      'なので中身を公開しています。マイクの状態を読むだけで音声そのものは扱わないこと、外に何も送っていないことは、読めば分かります。',
-    ],
     cta: 'GitHub で見る',
     note: 'MIT License / Swift / 依存パッケージなし',
   },
@@ -343,6 +335,7 @@ export const en: Copy = {
     sub: 'While you dictate or take a call, Kikazaru quietly lowers your Sonos or Google Home. When you stop talking, the volume comes right back.',
     download: 'Download Kikazaru',
     meta: 'macOS 14+ / Free / ~400 KB',
+    repo: 'Source',
     note: ['There is ', 'one extra step the first time you open it', '. It takes a minute — worth reading first.'],
   },
   shot: {
@@ -394,10 +387,6 @@ export const en: Copy = {
       lineB: 'from the notes',
       dirtA: 'walking with you',
       dirtB: 'that day',
-    },
-    video: {
-      title: 'Hear it happen',
-      note: '33 seconds, with sound. Listen for the moment the music drops, and how the voice cuts through while it does.',
     },
   },
   speakers: {
@@ -487,10 +476,6 @@ export const en: Copy = {
   source: {
     label: 'Source',
     heading: 'You can read all of it',
-    body: [
-      'Kikazaru is not registered with Apple, so you will be told the developer cannot be verified. Pushing past that warning for an app you know nothing about is a fair thing to hesitate over.',
-      'So the source is open. That it only reads whether the mic is in use, never the audio itself, and sends nothing anywhere — you can check that yourself.',
-    ],
     cta: 'View on GitHub',
     note: 'MIT License / Swift / no dependencies',
   },
